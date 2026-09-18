@@ -421,6 +421,126 @@ input.score-slider:disabled {
   max-width: 75px;
   line-height: 1.2;
 }
+.member-progress-section {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.member-progress-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.member-progress-heading h3 {
+  font-size: 16px;
+}
+.member-progress-heading p,
+.member-progress-heading > span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.member-progress-heading > span {
+  white-space: nowrap;
+}
+.member-progress-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.member-progress-card {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.member-progress-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.member-progress-person .avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+}
+.member-progress-person h4,
+.member-progress-metric h4 {
+  font-size: 13px;
+}
+.member-progress-person p,
+.member-progress-metric p,
+.member-progress-metric small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.member-progress-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.member-progress-metric {
+  min-width: 0;
+  text-align: center;
+}
+.member-progress-donut {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: conic-gradient(var(--green) var(--progress), var(--hover) 0);
+}
+.member-progress-donut::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.member-progress-donut strong {
+  position: relative;
+  font-size: 13px;
+  line-height: 1;
+}
+.member-progress-metric small {
+  color: var(--gold);
+}
+.member-progress-points {
+  min-width: 0;
+  padding-top: 9px;
+  text-align: center;
+}
+.member-progress-points h4 {
+  font-size: 13px;
+}
+.member-progress-points strong {
+  display: block;
+  margin-top: 9px;
+  color: var(--primary);
+  font-size: 26px;
+  line-height: 1;
+}
+.member-progress-points p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+@media (max-width: 640px) {
+  .member-progress-list {
+    grid-template-columns: 1fr;
+  }
+  .member-progress-card {
+    padding: 15px;
+  }
+}
 .score-formula {
   font-size: 11px;
   margin-top: 18px;
@@ -746,6 +866,9 @@ input.score-slider:disabled {
   text-align: center;
   line-height: 1.2;
   max-width: 65px;
+}
+.score-ring {
+  background: conic-gradient(var(--primary) var(--progress), var(--hover) 0);
 }
 .member-point-value {
   min-width: 86px;

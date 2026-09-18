@@ -21,6 +21,7 @@ import {
   trainerNavigation,
 } from "./trainer-view";
 import { MemberScores } from "./member-scores";
+import { MemberProgressCards } from "./member-progress";
 import { referenceCriteria } from "@/lib/scoring";
 import {
   MemberAttendance,
@@ -1217,6 +1218,11 @@ export default function App() {
                   />
                 )}
               </div>
+              <MemberProgressCards
+                members={visibleMembers}
+                month={month}
+                state={s}
+              />
             </section>
           )}
           {page === "Latihan & absensi" && (

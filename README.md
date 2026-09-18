@@ -1,70 +1,222 @@
-# Absensi & Poin Paskibra
+# Paskibra SMKN 5 Jakarta
 
-Aplikasi Next.js untuk pelatih dan anggota berdasarkan PRD versi 1.1 dan revisi pengguna. Tampilan berbahasa Indonesia, responsif, dan tema terang/gelap. Akses aplikasi memerlukan akun Supabase.
+<img src="public/logo-paskibra.png" alt="Logo Paskibra SMKN 5 Jakarta" width="112" />
 
-Versi PWA memakai desain biru-putih dengan navigasi bawah untuk anggota, riwayat absensi, poin, jadwal, dan profil. PWA dipasang dari browser; proyek ini tidak menghasilkan APK. Panduan GitHub, hosting, instalasi HP, dan perilaku offline ada di [docs/PWA-DEPLOY.md](docs/PWA-DEPLOY.md).
+Aplikasi untuk mengelola anggota, latihan, absensi QR, penilaian, dan perkembangan anggota Paskibra. Dibangun sebagai **Progressive Web App (PWA)** yang dapat dipasang ke layar utama HP melalui browser.
 
-## Jalankan lokal
+Antarmuka berbahasa Indonesia, mengutamakan penggunaan di HP, dan menyediakan tema terang/gelap. Login menggunakan akun pelatih atau anggota melalui Supabase Auth. Tidak tersedia mode demo atau pendaftaran mandiri.
 
-Prasyarat: Node.js 22 atau lebih baru, npm.
+## Fitur pelatih
 
-```powershell
-npm install
-npm run dev
+- **Anggota:** tambah akun, impor CSV, cari berdasarkan nama/NIS/kelas, ubah data, aktifkan/nonaktifkan anggota, dan reset kata sandi. Foto anggota tampil dalam daftar, bersama dua diagram donat perkembangan periode terpilih (kehadiran dan nilai) serta total poin.
+- **Latihan dan absensi:** buat jadwal, tentukan lokasi serta waktu absensi, generate QR, unduh PNG atau bagikan QR, lihat rekap, dan kelola izin/sakit/koreksi dengan alasan.
+- **Penilaian:** atur kriteria, cari anggota, lalu isi nilai lewat slider atau kolom angka **0–100**.
+- **Kompetensi:** buat katalog keterampilan dan catat tingkat penguasaan, tanggal, serta catatan anggota.
+- **Pengumuman:** simpan draf, terbitkan, ubah, dan arsipkan informasi.
+- **Ranking dan penghargaan:** lihat peringkat, sahkan hasil bulanan, buka kembali hasil dengan alasan, dan catat prestasi.
+- **Laporan:** ekspor CSV dan cetak/simpan PDF melalui browser.
+- **Pengaturan:** atur identitas sekolah, zona waktu, aturan poin, serta lihat audit perubahan.
+- **Profil:** ubah nama dan unggah/ganti/hapus foto pelatih.
+
+Navigasi bawah pelatih: **Beranda · Anggota · Absensi · Nilai · Profil**. Menu pengelolaan tambahan tersedia melalui Profil.
+
+## Fitur anggota
+
+- **Beranda:** ringkasan kehadiran, donat persentase nilai, total poin, jadwal, dan menu cepat.
+- **Absensi:** scan QR latihan, lihat hasil berupa nama, status, dan jam absensi; buka riwayat serta rekap kehadiran.
+- **Nilai:** rincian tiap latihan berisi tanggal, kehadiran, jam absensi jika tersedia, poin absensi, nilai setiap kriteria, subtotal penilaian, total poin latihan, dan catatan pelatih.
+- **Grafik:** diagram donat persentase akumulasi nilai dan grafik perkembangan pada bulan terpilih.
+- **Jadwal, kompetensi, dan pengumuman:** lihat jadwal latihan, catatan penguasaan pribadi, serta pengumuman yang diterbitkan.
+- **Ranking dan penghargaan:** lihat peringkat serta hasil yang tersedia tanpa membuka rincian pribadi anggota lain.
+- **Profil:** lihat data diri, unggah/ganti/hapus foto, dan buka **Info Pelatih** yang hanya menampilkan nama serta foto pelatih aktif.
+
+Navigasi bawah anggota: **Beranda · Absensi · Nilai · Jadwal · Profil**. Tombol **Keluar akun** berada langsung setelah menu **Penghargaan**, sebelum bagian pemasangan PWA dan Tentang aplikasi.
+
+## Absensi QR
+
+1. Pelatih membuat latihan dan mengatur waktu buka, batas tepat waktu, serta waktu tutup absensi.
+2. Pelatih membuka QR latihan untuk ditampilkan di tempat latihan, diunduh, atau dibagikan.
+3. Anggota login, membuka pemindai, dan mengizinkan kamera untuk membaca QR.
+4. Server memeriksa QR, sesi latihan, waktu, dan keanggotaan, lalu mencatat hadir atau terlambat.
+5. Anggota menerima hasil berupa nama dan jam absensi; pelatih melihat catatan pada rekap.
+
+Kamera hanya membaca QR, tanpa mengambil foto absensi atau meminta GPS/latitude/longitude. Scan ulang tidak menggandakan catatan. QR bertanda tangan digital, berlaku sampai sesi tutup, dan tidak berlaku setelah versi latihan berubah.
+
+Absensi memerlukan koneksi internet. QR dapat diteruskan kepada orang lain sehingga sistem tidak membuktikan lokasi fisik pemindai. Sesi kedaluwarsa diproses saat API data dibaca atau transaksi berikutnya berjalan, termasuk pencatatan alpa bagi anggota yang belum absen.
+
+## Penilaian dan perhitungan poin
+
+Setiap kriteria numerik memakai nilai bulat **0–100** dengan bobot yang sama. Pelatih dapat menambah kriteria; kriteria yang sudah memiliki nilai tidak dapat dihapus.
+
+```text
+Subtotal penilaian = jumlah nilai seluruh kriteria pada latihan
+Total poin latihan = poin absensi + subtotal penilaian
+Persentase grafik = total penilaian bulanan ÷ maksimum penilaian bulanan × 100%
 ```
 
-Buka http://localhost:3000 dan masuk dengan akun pelatih atau anggota. Mode demo, perpindahan peran tanpa login, data contoh dan QR sementara sudah dihapus dari aplikasi. Data uji hanya berada di direktori pengujian dan tidak dimasukkan ke aplikasi browser.
+Contoh: poin hadir 10 dan enam kriteria masing-masing 80 menghasilkan subtotal **480**, total poin latihan **490**, serta persentase penilaian **80%**.
 
-## Hubungkan Supabase
+- Poin hadir/terlambat mengikuti aturan periode yang ditetapkan pelatih.
+- Ranking mengakumulasi poin absensi dan penilaian. Poin absensi tidak masuk ke persentase donat.
+- Donat menghitung kriteria dari catatan hadir/terlambat pada latihan yang tidak dibatalkan.
+- Ringkasan pada menu **Anggota** menghitung kehadiran dari sesi yang sudah dibuka, nilai dari kriteria yang sudah diisi, serta total poin dibandingkan dengan potensi poin dari sesi yang dihadiri. Sesi mendatang tidak menurunkan persentase kehadiran.
+- Nilai **0** berarti sudah dinilai; **kosong** berarti belum dinilai. Komponen kosong tetap masuk nilai maksimum, dan hasil ditandai sementara.
+- Penilaian belum lengkap menghalangi pengesahan bulan. Bulan yang telah disahkan harus dibuka kembali sebelum diubah.
+- Poin yang sama menghasilkan peringkat yang sama, misalnya 1, 2, 2, 4.
+- Kompetensi kualitatif dan catatan prestasi lomba tidak menambah poin ranking.
+- Periode lama dengan skala keaktifan/keterampilan tetap memakai aturan aslinya.
 
-1. Buat proyek Supabase pengembangan.
-2. Jalankan migrasi dalam `supabase/migrations/` secara berurutan: `001_initial.sql`, `002_ranking.sql`, `003_profile_photos.sql`, lalu `004_scoring_criteria.sql` melalui SQL Editor. Untuk proyek yang sudah menjalankan 001–002, cukup lanjutkan 003–004.
-3. Buka `.env.local` yang sudah disiapkan kosong (atau salin `.env.example` pada checkout baru). Isi URL, anon key, dan service role key proyek Anda. Jangan masukkan service role key ke variabel `NEXT_PUBLIC_*` atau membagikannya melalui chat.
-4. Isi `ATTENDANCE_TOKEN_SECRET` dengan nilai acak kuat (minimal 32 byte). Contoh pembuat nilai lokal: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
-5. Pada Supabase Auth, nonaktifkan **Allow new users to sign up**. Aplikasi tidak menyediakan pendaftaran mandiri. Pembuatan akun melalui Admin API tetap tersedia.
-6. Buat akun pelatih awal. Tambahkan `ADMIN_EMAIL`, `ADMIN_PASSWORD` (minimal 10 karakter), dan `ADMIN_NAME` sementara di `.env.local`, lalu jalankan:
+## Foto profil dan identitas visual
+
+Foto menerima JPG, PNG, atau WebP maksimal **2 MB**. Gambar dipotong persegi, dikonversi menjadi JPEG 512 × 512 tanpa metadata asli, dan disimpan di bucket privat `avatars`. API memeriksa sesi serta hak akses sebelum mengirim foto; pelatih dapat melihat foto anggota pada daftar anggota.
+
+| Aset | Pemakaian |
+| --- | --- |
+| `public/logo-paskibra.png` | Sumber ikon PWA dan Apple Touch Icon |
+| `public/logo-paskibra-round.png` | Logo identitas pada login dan header |
+| `public/logo-login.png` | Latar samar yang menempel ke bawah halaman login |
+| `public/logo-dashboard.png` | Latar kutipan di footer Profil anggota/pelatih saja |
+
+Kutipan **“Satu langkah disiplin, seribu langkah menuju prestasi”** berada di tengah atas gambar profil. Gambar tetap samar, tidak menghalangi interaksi, dan bagian bawahnya menempel ke tepi navigasi HP.
+
+Buat ulang ikon 192, 512, maskable 512, dan Apple Touch 180 dengan:
+
+```powershell
+node scripts/generate-icons.mjs
+```
+
+Jika mengganti ikon, naikkan versi cache pada `public/sw.js` sebelum deploy ulang.
+
+## Menjalankan lokal
+
+Prasyarat: **Node.js 24.x**, npm, dan proyek Supabase.
+
+### 1. Instal dependensi
+
+Jalankan dari folder proyek:
+
+```powershell
+npm ci
+```
+
+### 2. Isi environment
+
+Jika belum ada, salin `.env.example` menjadi `.env.local`. Jangan menimpa konfigurasi yang sudah terisi.
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+ATTENDANCE_TOKEN_SECRET=
+```
+
+| Variabel | Isi |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL proyek Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key proyek Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key, hanya digunakan server |
+| `ATTENDANCE_TOKEN_SECRET` | Secret acak untuk tanda tangan QR |
+
+Buat secret menggunakan 32 byte acak:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Salin hasilnya ke `ATTENDANCE_TOKEN_SECRET`. Jangan commit `.env.local`, dan jangan menambahkan awalan `NEXT_PUBLIC_` ke service role key atau secret QR.
+
+### 3. Siapkan Supabase
+
+Untuk **proyek Supabase baru**, jalankan SQL melalui SQL Editor secara berurutan:
+
+1. `supabase/migrations/001_initial.sql`
+2. `supabase/migrations/002_ranking.sql`
+3. `supabase/migrations/003_profile_photos.sql`
+4. `supabase/migrations/004_scoring_criteria.sql`
+
+Migrasi 003 menyiapkan penyimpanan foto profil; 004 memperbarui penilaian dan ranking. **Jika 001–004 sudah dijalankan pada proyek yang sama, tidak perlu menjalankannya ulang saat deploy.** Akun, data, dan foto yang sudah tersimpan tetap digunakan.
+
+Nonaktifkan pendaftaran publik di pengaturan Supabase Auth. Akun anggota dibuat oleh pelatih melalui aplikasi.
+
+### 4. Buat akun pelatih pertama
+
+Lakukan hanya jika belum ada akun pelatih. Tambahkan sementara ke `.env.local`:
+
+```dotenv
+ADMIN_EMAIL=pelatih@example.com
+ADMIN_PASSWORD=ganti-dengan-kata-sandi-kuat
+ADMIN_NAME=Nama Pelatih
+```
+
+Ganti contoh dengan data akun. Kata sandi minimal 10 karakter. Kemudian jalankan:
 
 ```powershell
 node --env-file=.env.local scripts/create-admin.mjs
 ```
 
-7. Hapus tiga variabel `ADMIN_*` dari file setelah akun dibuat. Restart `npm run dev`, lalu masuk dengan akun pelatih.
-8. Di **Pengaturan**, isi identitas sekolah dan zona waktu. Tentukan poin untuk bulan latihan sebelum membuat sesi. Tidak ada nilai poin, waktu sesi, atau zona waktu produksi yang diisi otomatis.
-9. Tambahkan anggota manual atau gunakan template CSV dari halaman Anggota. Akun menggunakan email dan kata sandi; kata sandi dikelola Supabase Auth dan tidak disimpan di model aplikasi.
+Hapus variabel `ADMIN_*` setelah akun dibuat. Variabel tersebut tidak diperlukan untuk menjalankan aplikasi atau deploy ke Vercel.
 
-## Alur yang tersedia
+### 5. Jalankan aplikasi
 
-- Login: centang **Ingat saya** untuk cookie sesi selama 30 hari, diperbarui ketika token diperbarui. Tanpa centang, cookie memakai sesi browser. Token disimpan sebagai cookie HttpOnly; password tidak disimpan aplikasi. Keluar akun menghapus cookie sesi dan pilihan tersebut. Masa sesi juga mengikuti validitas akun dan kebijakan Supabase.
-- Anggota: tambah, CSV dengan laporan baris gagal, cari, ubah, nonaktif/aktif, reset kata sandi. Riwayat masa aktif dipertahankan.
-- Latihan: tanggal, materi, nama lokasi, buka/batas tepat waktu/tutup, perubahan versi dan pembatalan beralasan. Tidak memerlukan koordinat atau radius.
-- Absensi: pelatih membuat QR latihan, mengunduh PNG atau membagikannya melalui menu berbagi perangkat. Anggota login dan memindai QR melalui aplikasi; nama dan jam penerimaan server tampil setelah berhasil. Kamera hanya membaca QR, tanpa foto absensi atau GPS. QR bertanda tangan digital, berlaku sampai sesi tutup, dan tidak berlaku setelah latihan diubah. Pengiriman ulang tidak menggandakan absensi. Panduan lengkap: [docs/ABSENSI-QR.md](docs/ABSENSI-QR.md).
-- Izin/sakit/koreksi oleh pelatih, catatan scan dan bukti lama dipertahankan. Koreksi menjadi hadir/terlambat memerlukan catatan scan QR atau bukti lama yang valid.
-- Penilaian: pelatih mencari anggota berdasarkan nama, NIS, atau kelas, lalu menggeser slider 0–100 untuk setiap kriteria. Kolom angka tersinkron untuk nilai tepat; tombol Kosongkan mengembalikan status belum dinilai. Nol adalah nilai sah dan berbeda dari kosong. Akumulasi semua kriteria ditambah poin absensi menentukan ranking. Koreksi memerlukan alasan.
-- Layout pelatih memakai header, ikon, kartu ringkasan dan menu cepat yang sama dengan anggota. Di HP tersedia tab Beranda, Anggota, Absensi, Nilai, Profil; menu tambahan tersedia dari Profil tanpa tombol hamburger.
-- Tab **Nilai** menampilkan rincian kriteria dan catatan pelatih. Tab **Grafik** menampilkan donat akumulasi nilai bulanan: total nilai ÷ maksimum seluruh kriteria dari sesi hadir/terlambat yang tercatat × 100%. Contoh 480/600 = 80%. Nilai yang belum diisi ikut dalam maksimum dan hasil diberi label sementara; poin absensi ditambahkan terpisah pada ranking.
-- Profil anggota: pilih foto JPG/PNG/WebP maksimal 2 MB, pratinjau, simpan, dan hapus. Foto dipotong persegi, dikonversi menjadi JPEG 512 × 512 tanpa metadata asli, lalu disimpan di bucket privat `avatars`. Pemilik dapat membuka fotonya sendiri; pelatih dapat melihat foto di daftar anggota melalui endpoint privat tanpa cache.
-- Profil pelatih: edit nama, unggah/ganti/hapus foto dengan ketentuan yang sama. Anggota membuka **Profil → Info Pelatih** untuk melihat nama dan foto pelatih aktif. Informasi ini tidak memuat email atau data login. Pelatih hanya dapat mengubah profilnya sendiri. Nama dan referensi foto pelatih disimpan pada `school_state.trainers`; daftar akun aktif tetap mengikuti tabel `profiles`. Tidak memerlukan migrasi SQL tambahan setelah 001–004.
-- Ranking kompetisi (1, 2, 2, 4), total sepanjang masa, pengesahan bulanan, pemenang bersama, buka kembali, dan versi penghargaan.
-- Laporan CSV dan cetak/PDF, prestasi lomba tanpa pengaruh ranking, audit perubahan.
-- Kompetensi: pelatih membuat katalog keterampilan, mencatat tingkat penguasaan (perlu latihan, berkembang, menguasai), tanggal dan catatan per anggota. Perubahan wajib beralasan dan diaudit. Anggota melihat catatannya sendiri; hasil ini tidak memengaruhi ranking.
-- Pengumuman: pelatih menyimpan draf, menerbitkan, mengubah, dan mengarsipkan informasi. Anggota hanya melihat yang diterbitkan. Lonceng pada header membuka daftar pengumuman, tanpa push notification.
-- PWA: manifest dan ikon instalasi, bantuan pemasangan, fallback offline, tab bawah anggota, ringkasan absensi dan grafik poin. Server tetap diperlukan untuk data akun serta pengiriman absensi.
+```powershell
+npm run dev
+```
 
-Sesi kedaluwarsa diproses secara idempoten saat API data dibaca atau ada transaksi berikutnya. Tidak memerlukan scheduler, tetapi perubahan menjadi alpa baru tersimpan saat permintaan tersebut terjadi.
+Buka `http://localhost:3000` atau port yang ditampilkan terminal. Restart server setelah mengubah `.env.local`.
 
-## Keputusan implementasi penyimpanan
+Login sebagai pelatih, buka **Profil → Pengaturan sekolah**, isi identitas dan zona waktu, lalu tentukan aturan poin/kriteria periode latihan. Tambahkan akun anggota melalui menu Anggota atau impor CSV.
 
-Stack mengikuti PRD: Next.js App Router, React, TypeScript, Tailwind, Supabase Auth/PostgreSQL/Storage, Sharp, Zod, Vitest, Playwright.
+Untuk menjalankan build produksi lokal:
 
-**Penyimpanan domain tahap ini menggunakan satu aggregate JSONB sekolah**, bukan tabel terpisah per entitas. Identitas login berada di tabel `profiles` dan `auth.users`. Struktur anggota, sesi, absensi, aturan, hasil, prestasi, dan audit tetap terpisah dalam aggregate. Keputusan ini menyederhanakan transaksi koreksi dan snapshot hasil untuk satu sekolah; seluruh mutasi memakai revision compare-and-swap dan retry. Trigger PostgreSQL menolak pasangan absensi, NIS, dan periode aturan ganda. Ranking produksi dihitung dengan agregasi SQL dan `RANK()`.
+```powershell
+npm run build
+npm run start
+```
 
-Konsekuensi: setiap perubahan membaca/menulis aggregate sekolah. Pendekatan ini perlu dinormalisasi dan diuji beban sebelum skala data besar. Foto disimpan terpisah di bucket privat, bukan di JSONB. Siswa tidak memiliki akses langsung ke aggregate; semua pembacaan melewati proyeksi server yang hanya memberikan data pribadi sendiri dan kolom publik ranking.
+## Deployment melalui GitHub dan Vercel
 
-Kompetensi dan pengumuman disimpan sebagai koleksi tambahan dalam aggregate yang sama. Data lama tanpa koleksi ini dibaca sebagai daftar kosong; tidak memerlukan migrasi SQL tambahan. Penilaian kompetensi menyimpan hasil terbaru per pasangan anggota/kompetensi, dengan riwayat perubahan dalam audit pelatih.
+1. Push kode proyek ke repository GitHub. Sertakan `package.json`, `package-lock.json`, `src`, `public`, dan konfigurasi proyek. `.gitignore` mengecualikan environment lokal, dependensi, build, serta hasil pengujian.
+2. Di Vercel, pilih **Add New → Project**, lalu impor repository.
+3. Pilih **Next.js**, Root Directory yang memuat `package.json` (`./` jika di akar repository), dan Node.js **24.x**.
+4. Isi Install Command dengan `npm ci`, Build Command dengan `npm run build`, dan biarkan Output Directory mengikuti default Next.js.
+5. Tambahkan empat environment aplikasi untuk **Production**, menggunakan nilai dari `.env.local` atau proyek Supabase tujuan. Masukkan nilainya tanpa tanda kutip. Tombol **Add** pada integrasi Supabase opsional tidak perlu digunakan jika environment diisi manual.
+6. Klik **Deploy**, tunggu status **Ready**, lalu buka domain HTTPS yang diberikan.
+7. Uji login kedua peran, foto profil, nilai, dan scan QR melalui HP. Jika memakai Supabase yang sama, gunakan akun yang sudah ada.
 
-Ketentuan numerik baru mengikuti revisi pengguna pada 16–17 September 2026, menggantikan skala awal untuk periode baru. Setiap kriteria berbobot sama dan bernilai 0–100. Kriteria yang sudah memiliki nilai, termasuk nol, tidak dapat dihapus. Menambah kriteria membuat data sebelumnya belum lengkap sampai nilai tambahannya diisi. Bulan disahkan harus dibuka kembali sebelum perubahan. Periode lama yang sudah memakai nilai keaktifan/keterampilan dipertahankan pada skala aslinya dan tidak dikonversi diam-diam; gunakan periode baru untuk ketentuan 0–100. Perubahan minimum dari 1 menjadi 0 tidak memerlukan migrasi SQL tambahan.
+Untuk mengirim pembaruan dari repository lokal yang sudah terhubung:
 
-## Pengujian
+```powershell
+git add .
+git commit -m "Perbarui aplikasi Paskibra"
+git push
+```
+
+Push ke branch produksi yang terhubung memicu deployment baru. Setelah mengubah environment Vercel, pilih **Redeploy**. Folder `.github/workflows` bersifat opsional untuk GitHub Actions dan tidak diperlukan oleh deployment Vercel.
+
+Aplikasi membutuhkan server Next.js untuk API. GitHub Pages tidak dapat menjalankan keseluruhan aplikasi ini.
+
+## Memasang PWA di HP
+
+- **Android:** buka domain HTTPS di browser, lalu pilih opsi instalasi aplikasi atau tambahkan ke layar utama jika tersedia.
+- **iPhone/iPad:** buka di Safari, lalu pilih **Bagikan → Tambahkan ke Layar Utama**.
+- Jalankan dari ikon Paskibra. PWA tidak memerlukan berkas APK.
+
+Login menyediakan **Ingat saya**. Jika dicentang, cookie sesi diberi masa berlaku 30 hari dan diperbarui saat token diperbarui; jika tidak, cookie mengikuti sesi browser. Validitas akses tetap mengikuti sesi Supabase dan status akun. Fitur ini tidak menyimpan kata sandi.
+
+Service worker hanya menyimpan halaman offline dan ikon publik. Data akun, absensi, nilai, serta foto tetap memerlukan internet. Tidak ada antrean absensi offline. Service worker aktif pada build produksi, bukan `npm run dev`.
+
+## Teknologi dan penyimpanan
+
+- Next.js App Router, React, TypeScript, dan Tailwind CSS.
+- Supabase Auth untuk akun, PostgreSQL untuk data, dan Storage privat untuk foto.
+- Sharp untuk pemrosesan foto, Zod untuk validasi, serta QRCode/jsQR untuk QR.
+- Vitest dan PGlite untuk pengujian logika/database; Playwright untuk browser.
+
+Data sekolah disimpan dalam satu dokumen JSONB di `school_state`: anggota, latihan, absensi, aturan, hasil bulanan, prestasi, kompetensi, pengumuman, profil pelatih, dan audit. Identitas autentikasi berada di `profiles`/Supabase Auth. Berkas foto disimpan terpisah di Storage.
+
+Perubahan memakai pemeriksaan revision dan retry untuk menangani pembaruan serentak. Ranking produksi dihitung melalui fungsi SQL. Anggota menerima data pribadi sendiri serta informasi yang dibagikan melalui API, bukan akses langsung ke seluruh dokumen sekolah. Penyimpanan satu dokumen perlu dievaluasi kembali jika volume data atau jumlah pengguna tumbuh besar.
+
+## Pemeriksaan dan pemeliharaan
 
 ```powershell
 npm run typecheck
@@ -73,17 +225,6 @@ npm run build
 npm run test:e2e
 ```
 
-Jalankan build sebelum `test:e2e`: Playwright menjalankan server produksi khusus pada port 3100 dan menggunakan Chrome yang terpasang (`channel: 'chrome'`). Port terpisah mencegah pengujian PWA memakai server pengembangan di port 3000. Jika menggunakan Chromium bawaan Playwright, hapus opsi channel dan jalankan `npx playwright install chromium`. Screenshot hasil uji ada di `artifacts/`. Skrip dev/build memakai Webpack; cache Turbopack lama dipisahkan saat pemeriksaan di Windows.
+Jalankan build sebelum tes browser. Playwright menggunakan Chrome yang terpasang dan server produksi di port **3100**; pastikan port tersedia. Pengujian browser memakai respons API terisolasi, sedangkan pengujian database lokal memakai PGlite. Tetap periksa login, foto, instalasi PWA, serta scan/bagikan QR pada HP yang akan digunakan.
 
-Unit tests mencakup tanda tangan QR, gambar QR yang benar-benar dibaca kembali, batas waktu, duplikasi absensi, poin, nilai kosong, ranking seri, perubahan bulan, pembatalan, pengesahan ulang, privasi, keanggotaan, dan CSV. Pengujian PostgreSQL lokal memakai PGlite dengan stub schema Auth/Storage untuk memeriksa migrasi, transaksi, ranking SQL, dan RLS. Ini tidak menggantikan pengujian Supabase Auth/Storage sungguhan.
-
-## Sebelum penggunaan sekolah
-
-- Konfigurasi dan uji Supabase pengembangan, termasuk login kedua peran, unggah foto nyata, signed URL, retry, penonaktifan akun, dan akses silang.
-- Uji pemindaian, unduh dan berbagi QR melalui HTTPS pada Android dan iPhone nyata. QR dapat diteruskan kepada orang lain; tanpa GPS, sistem tidak membuktikan lokasi fisik pemindai.
-- Jalankan prosedur backup dan pemulihan dalam `docs/OPERATIONS.md`, tetapkan masa simpan foto, lalu uji beban sesuai jumlah anggota.
-- Deploy Next.js ke Vercel dan isi environment server; jangan gunakan service key pada browser. Domain produksi wajib HTTPS.
-
-Koneksi Supabase lokal, login pelatih dan pembacaan dashboard berhasil diuji pada 17 September 2026. Proyek belum dideploy dan belum menjalani uji perangkat sekolah atau pemulihan layanan nyata.
-
-Hasil pemeriksaan build, perhitungan, database, dan alur browser dicatat di `docs/QA.md`.
+Cadangkan database dan objek Storage secara terpisah; backup database tidak otomatis mencakup berkas foto. Pertahankan path objek agar referensinya sesuai, dan periksa referensi foto anggota/pelatih sebelum membersihkan objek yang tidak digunakan.

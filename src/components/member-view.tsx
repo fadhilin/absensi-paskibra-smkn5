@@ -4,7 +4,7 @@ import { useState, type CSSProperties } from "react";
 import type { DashboardData, Training } from "@/lib/types";
 import { eligible } from "@/lib/engine";
 import { InstallPanel } from "./pwa";
-import { attendanceTotal } from "@/lib/scoring";
+import { attendanceTotal, evaluationSummary } from "@/lib/scoring";
 import { Avatar, ProfileAvatar, ProfilePhotoEditor } from "./profile-photo";
 import { Icon as IconifyIcon } from "@iconify/react";
 
@@ -208,6 +208,7 @@ export function MemberOverview({
     data,
     month,
   );
+  const scores = evaluationSummary(data.state, data.viewer.id, month);
   const next = [...sessions]
     .filter(
       (t) =>
@@ -247,20 +248,36 @@ export function MemberOverview({
           onClick={() => navigate("Perkembangan saya")}
         >
           <span className="card-heading">
-            Poin saya <span aria-hidden="true">›</span>
+            Nilai & poin saya <span aria-hidden="true">›</span>
           </span>
           <span className="summary-content">
-            <span className="member-point-value">
-              {own?.total ?? 0}
-              <small>poin</small>
+            <span
+              className="attendance-ring score-ring"
+              role="img"
+              aria-label={
+                scores.percentage === null
+                  ? "Belum ada nilai"
+                  : `Persentase nilai ${scores.percentage} persen`
+              }
+              style={{ "--progress": `${scores.percentage ?? 0}%` } as CSSProperties}
+            >
+              <b>
+                {scores.percentage === null
+                  ? "Belum ada"
+                  : `${scores.percentage}%`}
+              </b>
             </span>
             <span>
-              <strong>Posisi {own?.rank ?? "belum tersedia"}</strong>
-              <small>Periode yang dipilih</small>
+              <strong>{own?.total ?? 0} poin</strong>
+              <small>
+                {scores.assessed
+                  ? `${scores.total} dari ${scores.max} nilai`
+                  : "Menunggu penilaian pelatih"}
+              </small>
               <small>
                 {own?.incomplete
                   ? `${own.incomplete} catatan belum lengkap`
-                  : "Lihat rincian per latihan"}
+                  : `Posisi ${own?.rank ?? "belum tersedia"}`}
               </small>
             </span>
           </span>

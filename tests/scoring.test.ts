@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { applyAction, publicView, ranking } from "../src/lib/engine";
 import { emptyState, type State, type Viewer } from "../src/lib/types";
 import { evaluationSummary } from "../src/lib/scoring";
+import { memberProgress } from "../src/lib/member-progress";
 const admin: Viewer = { id: "coach", name: "Coach", role: "admin" };
 const now = new Date("2026-02-01T00:00:00Z");
 function fixture(): State {
@@ -61,6 +62,28 @@ function fixture(): State {
   return s;
 }
 describe("Akumulasi nilai 0–100", () => {
+  it("meringkas donat hadir dan nilai tanpa memasukkan latihan yang belum dibuka", () => {
+    const s = fixture();
+    const duringPeriod = new Date("2026-01-20T00:00:00Z");
+    const result = memberProgress(s, "one", "2026-01", duringPeriod);
+    expect(result).toMatchObject({
+      attendance: { current: 1, maximum: 1, percentage: 100 },
+      score: { current: 240, maximum: 300, percentage: 80, missing: 0 },
+      points: { current: 250, maximum: 310, percentage: 81 },
+    });
+
+    s.sessions.push({
+      ...s.sessions[0],
+      id: "upcoming",
+      date: "2026-01-30",
+      opens_at: "2026-01-30T00:00:00Z",
+    });
+    expect(memberProgress(s, "one", "2026-01", duringPeriod).attendance).toMatchObject({
+      current: 1,
+      maximum: 1,
+      percentage: 100,
+    });
+  });
   it("menghitung 240/300 sebagai 80%, dan menambahkan poin absensi untuk ranking", () => {
     const s = fixture();
     expect(evaluationSummary(s, "one", "2026-01")).toMatchObject({

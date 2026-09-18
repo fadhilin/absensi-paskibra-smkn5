@@ -1,0 +1,32 @@
+# Arah visual
+
+PWA Paskibra untuk pelatih dan anggota. Pengguna meminta mengganti desain awal dengan referensi aplikasi anggota biru-putih pada 16 September 2026. ENERGY 2 / RHYTHM 2 / MOTION 1.
+
+Revisi halaman awal 17 September 2026: satu kolom berpusat, tempat logo di atas judul PASKIBRA dan SMKN 5 JAKARTA yang tebal, langsung diikuti form login. Panel desktop membatasi lebar formulir; di HP konten memakai lebar layar dengan padding 24 piksel. `public/logo-paskibra.svg` adalah placeholder berlabel LOGO yang akan diganti pengguna, bukan logo sekolah rekaan. Panel promosi dan slogan awal dihapus sesuai permintaan pengguna.
+
+- Biru #2454ac pada header dan tindakan utama mengikuti referensi; putih dan biru muda memisahkan konten dan navigasi.
+- Sidebar mengelompokkan pekerjaan pelatih di desktop. Di HP pelatih memakai lima tab bawah: Beranda, Anggota, Absensi, Nilai, Profil; menu tambahan tersedia di profil dan tombol Menu. Anggota menggunakan lima tab bawah: Beranda, Absensi, Nilai, Jadwal, Profil. Header, ikon, kartu ringkasan dan menu cepat kedua peran memakai bahasa visual yang sama.
+- Arial / sistem sans-serif dipilih agar huruf dan angka mudah dibaca tanpa unduhan font di koneksi sekolah.
+- Spasi 8, 16, 24, 32 memisahkan bidang formulir, kelompok data, dan bagian halaman.
+- Panel dipakai untuk kelompok kerja; daftar anggota dan hasil tetap tabel agar mudah dibandingkan.
+- Tidak menggunakan foto atau logo sekolah rekaan. Monogram P adalah penanda aplikasi, bukan lambang sekolah.
+- Aksen emas gelap hanya untuk penghargaan. Status selalu memiliki teks, bukan warna saja.
+- Tema terang dan gelap tersedia; gerak hanya untuk umpan balik hover dan fokus.
+- Data contoh hanya berada dalam fixture pengujian, tidak tersedia sebagai mode pada aplikasi.
+- Ikon orang, kalender, grafik, dan piala membantu mengenali anggota, latihan, ranking, dan penghargaan; label teks tetap menjadi petunjuk utama.
+- Bayangan dialog dan sidebar HP menandai lapisan interaksi di atas konten. Ring kehadiran menggambarkan rasio sesi yang benar-benar diikuti. Donat pada tab **Grafik** menggambarkan total seluruh nilai dibagi maksimum kriteria pada bulan terpilih, mengikuti revisi pengguna. Nilai belum lengkap diberi label sementara.
+- Fokus layar anggota: identitas dan kehadiran di beranda, riwayat di absensi, rincian kriteria pada tab Nilai, donat akumulasi pada Grafik, jadwal di kalender, serta identitas/pengaturan dan ubah foto di profil. Kartu ringkasan dan menu cepat berukuran konsisten mengikuti fungsi dan referensi pengguna.
+- Ikon PWA memakai berkas `logo-paskibra.png` milik pengguna, dengan latar putih dan ruang aman untuk pemotongan ikon perangkat. Ikon Apple Touch dibuat 180 piksel, ikon aplikasi 192/512 piksel, dan ikon maskable 512 piksel.
+- Ilustrasi footer memakai `logo-login.png` pada login dan `logo-dashboard.png` pada halaman akun. Gambar abu-abu berpudar dengan opasitas 16% (12% pada tema gelap) menjadi latar di belakang bagian bawah konten, bukan blok footer tambahan. Posisi absolut tidak menambah tinggi/gap halaman; lapisan terisolasi menjaga gambar di belakang tulisan dan menu. Ilustrasi tidak menangkap sentuhan dan disembunyikan saat mencetak.
+- Gambar login memakai `bottom: 0` terhadap seluruh `.login-screen`, bukan kotak formulir. `logo-dashboard.png` hanya tampil pada Profil anggota/pelatih sebagai latar footer transparan dengan kutipan “Satu langkah disiplin, seribu langkah menuju prestasi”. Area kutipan memberi ruang agar seluruh figur pada gambar terlihat di atas navigasi, tanpa kartu atau warna latar tambahan. Menu lain tidak memuat gambar ini.
+- Profil anggota menempatkan tombol Keluar akun langsung setelah Penghargaan, sebelum panel instalasi dan Tentang aplikasi. Dasar gambar profil sejajar tepi atas navigasi HP tanpa celah; tinggi navigasi dan ruang bawah profil memakai ukuran yang sama termasuk safe area.
+- Menu cepat mengikuti referensi: Absensi Saya, Nilai Saya, Kompetensi, Jadwal Latihan, Pengumuman, Profil. Ikon rumah, kalender centang, batang nilai, kalender jadwal, dan orang mengidentifikasi lima tab bawah. Ikon berisi lebih tegas seperti referensi dan selalu disertai label.
+- Kompetensi dan Pengumuman ditambahkan atas persetujuan pengguna. Kompetensi menunjukkan tingkat penguasaan dan catatan privat dari pelatih, terpisah dari poin ranking. Pengumuman memiliki draf, terbit, dan arsip.
+- Header biru menampilkan tombol kembali pada halaman detail dan lonceng untuk membuka pengumuman. Tab Riwayat/Rekap memisahkan daftar dan ringkasan absensi; tab Nilai/Grafik/Kompetensi mengarahkan anggota ke rincian yang sesuai.
+- Safe area dan ruang bawah konten menjaga navigasi tetap nyaman di HP. Semua layar aplikasi mengikuti akun yang sedang login.
+- Revisi nilai 16 September 2026: kriteria numerik memakai skala 1–100 dan akumulasinya memengaruhi ranking. Ini terpisah dari katalog Kompetensi yang mencatat tingkat penguasaan kualitatif. Donat hanya pada tab Grafik, bukan tab Nilai.
+- Foto profil menggunakan foto yang dipilih anggota sendiri, dengan pratinjau dan konfirmasi hapus. Inisial nama menjadi pengganti ketika foto belum tersedia.
+- Pelatih juga dapat mengganti foto dan nama profil sendiri. Anggota melihat nama dan foto pelatih aktif melalui bagian **Info Pelatih** dalam tab Profil. Penempatan ini mempertahankan lima tab utama dan tidak menambahkan data pribadi atau perkenalan singkat.
+- Revisi 17 September 2026: skala numerik menjadi 0–100. Slider panjang per kriteria memudahkan penilaian dengan sentuhan; kolom angka menyediakan ketepatan dan keyboard. Nilai nol tetap dibedakan dari belum dinilai; tombol Kosongkan mengembalikan nilai ke status kosong. Pencarian nama, NIS, atau kelas mempersempit anggota tanpa membuang isian yang belum disimpan.
+- Revisi navigasi berikutnya: tombol hamburger dihapus dari HP. Menu tambahan pelatih tersedia melalui Profil. Header beranda memakai logo pengguna berukuran 40 × 40 dengan `object-fit: contain`, lalu identitas PASKIBRA / SMKN 5 JAKARTA dalam dua baris. Login menyediakan checkbox Ingat saya dengan area sentuh setinggi 44 piksel.
+- Absensi QR: pelatih membuka Generate QR pada kartu latihan, dengan tombol Unduh QR dan Bagikan QR. Kode hitam-putih tetap berada di latar putih agar mudah dipindai pada kedua tema. Anggota membuka pemindai dari tab Absensi, lalu menerima ringkasan nama, latihan, status dan jam. Kamera hanya aktif setelah tindakan pengguna dan dihentikan saat QR terbaca, dialog ditutup atau halaman disembunyikan. Tidak ada permintaan GPS maupun pengambilan foto absensi.

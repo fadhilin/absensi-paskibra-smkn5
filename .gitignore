@@ -7,3 +7,8 @@ test-results/
 playwright-report/
 artifacts/
 *.tsbuildinfo
+.github/workflows/
+.AGENTS.md
+.CLAUDE.md
+.DESIGN.md
+.docs/

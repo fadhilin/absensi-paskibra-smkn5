@@ -40,7 +40,6 @@ export function ScoreDonut({
               ? "Semua komponen sudah dinilai"
               : "Menunggu penilaian pelatih"}
         </p>
-        <small>Nilai latihan pada periode terpilih</small>
       </div>
     </div>
   );
