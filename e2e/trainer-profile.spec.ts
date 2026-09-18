@@ -1,0 +1,51 @@
+import { test, expect } from "@playwright/test";
+import { useSchoolApi, switchRole } from "./school-api";
+
+test("login tidak menyediakan akses contoh tanpa akun", async ({ page }) => {
+  await page.route("**/api/app?*", route => route.fulfill({ status:401,json:{error:"Masuk kembali."} }));
+  await page.goto("/");
+  await expect(page.getByRole("button", { name:"Masuk",exact:true })).toBeEnabled();
+  await expect(page.getByText(/demo|data contoh|Lihat sebagai/i)).toHaveCount(0);
+});
+
+test("pelatih mengedit nama dan foto; anggota melihat Info Pelatih tanpa kontrol edit", async ({ page, request }) => {
+  expect((await request.post("/api/profile", {headers:{Origin:"http://localhost:3100"},data:{name:"Tidak sah"}})).status()).toBe(401);
+  expect((await request.get("/api/profile/photo?trainer=coach-test")).status()).toBe(401);
+  await useSchoolApi(page);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto("/");
+  await page.getByRole("navigation",{name:"Navigasi pelatih"}).getByRole("button",{name:"Profil pelatih",exact:true}).click();
+  await page.getByText("Edit nama pelatih",{exact:true}).click();
+  await page.getByLabel("Nama pelatih",{exact:true}).fill("Pelatih Uji Diperbarui");
+  await page.getByRole("button",{name:"Simpan nama",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"Pelatih Uji Diperbarui",exact:true})).toBeVisible();
+  await page.getByText("Ubah foto profil",{exact:true}).click();
+  await page.getByLabel("Pilih foto profil").setInputFiles("public/icons/icon-192.png");
+  await page.getByRole("button",{name:"Simpan foto profil",exact:true}).click();
+  await expect(page.getByRole("img",{name:"Foto profil Pelatih Uji Diperbarui",exact:true})).toBeVisible();
+  await page.screenshot({path:"artifacts/trainer-profile-edit.png",fullPage:true});
+  await page.reload();
+  await expect(page.getByRole("img",{name:"Foto profil Pelatih Uji Diperbarui",exact:true})).toBeVisible();
+  await switchRole(page,"member");
+  await page.getByRole("navigation",{name:"Navigasi anggota"}).getByRole("button",{name:"Profil saya",exact:true}).click();
+  await page.getByText("Info Pelatih",{exact:true}).click();
+  const info=page.locator(".trainer-directory");
+  await expect(info).toContainText("Pelatih Uji Diperbarui");
+  await expect(info.getByRole("img")).toBeVisible();
+  await expect(info.getByRole("button")).toHaveCount(0);
+  await expect(info.locator("input,textarea")).toHaveCount(0);
+  await page.setViewportSize({width:320,height:740});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:"artifacts/member-trainer-info.png",fullPage:true});
+  await switchRole(page,"admin");
+  await page.getByRole("navigation",{name:"Navigasi pelatih"}).getByRole("button",{name:"Profil pelatih",exact:true}).click();
+  await page.getByText("Ubah foto profil",{exact:true}).click();
+  await page.getByRole("button",{name:"Hapus foto",exact:true}).click();
+  await page.getByRole("button",{name:"Ya, hapus foto",exact:true}).click();
+  await expect(page.getByRole("img",{name:"Foto profil Pelatih Uji Diperbarui",exact:true})).toHaveCount(0);
+  await switchRole(page,"member");
+  await page.getByRole("navigation",{name:"Navigasi anggota"}).getByRole("button",{name:"Profil saya",exact:true}).click();
+  await page.getByText("Info Pelatih",{exact:true}).click();
+  await expect(page.locator(".trainer-directory")).toContainText("Pelatih Uji Diperbarui");
+  await expect(page.locator(".trainer-directory img")).toHaveCount(0);
+});

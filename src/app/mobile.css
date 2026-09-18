@@ -1,0 +1,1372 @@
+.topbar {
+  background: #2454ac;
+  color: #fff;
+  border-bottom-color: #2454ac;
+}
+.topbar .breadcrumb,
+.topbar .breadcrumb strong,
+.topbar .topbar-right,
+.topbar .divider {
+  color: #fff;
+}
+.topbar .mobile-menu {
+  background: #fff;
+  color: #2454ac;
+}
+.topbar :focus-visible {
+  outline-color: #fff;
+}
+.member-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.member-header-title strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.header-school-logo {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  object-fit: contain;
+}
+.header-school-line {
+  display: block;
+  line-height: 1.35;
+}
+.member-header-title .brand-mark {
+  flex-shrink: 0;
+  width: 32px;
+  height: 36px;
+  font-size: 23px;
+  border: 1px solid #ffffff80;
+}
+.member-app .breadcrumb {
+  display: none;
+}
+.member-profile-button {
+  background: transparent;
+  color: #fff;
+  min-width: 44px;
+  padding: 10px;
+}
+.member-back-button {
+  background: transparent;
+  color: #fff;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  margin-left: -10px;
+  flex-shrink: 0;
+}
+.member-app .page-heading > div:first-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.member-app .page-heading {
+  justify-content: center;
+}
+.member-app .heading-actions {
+  width: 100%;
+}
+.member-app .month-select {
+  width: 100%;
+  max-width: none;
+}
+.skip {
+  clip-path: inset(50%);
+}
+.skip:focus {
+  clip-path: none;
+}
+.login-screen,
+main#main {
+  position: relative;
+  isolation: isolate;
+}
+.page-art {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  inset-inline: 0;
+  height: clamp(200px, 55vw, 320px);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.16;
+  filter: grayscale(1);
+  mask-image: linear-gradient(to bottom, transparent, #000 45%);
+}
+.page-art img {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 480px);
+  height: auto;
+}
+.login-art {
+  height: 260px;
+}
+.login-art img {
+  width: 320px;
+  max-width: 100%;
+}
+.profile-footer {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(220px, 65vw, 300px);
+  margin: 24px auto 0;
+  max-width: 480px;
+}
+.profile-footer blockquote {
+  margin: 0;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+  font-style: italic;
+  color: var(--ink);
+}
+.profile-footer .dashboard-art {
+  height: 100%;
+  mask-image: none;
+}
+.app-shell[data-page="Profil saya"] main#main,
+.app-shell[data-page="Profil pelatih"] main#main {
+  padding-bottom: 0;
+}
+@media (max-width: 900px) {
+  .app-shell {
+    --bottom-nav-height: calc(72px + env(safe-area-inset-bottom));
+  }
+  .app-shell[data-page="Profil saya"] main#main,
+  .app-shell[data-page="Profil pelatih"] main#main {
+    padding-bottom: var(--bottom-nav-height);
+  }
+}
+:root[data-theme="dark"] .page-art {
+  filter: grayscale(1) invert(1);
+  opacity: 0.12;
+}
+.profile-image {
+  object-fit: cover;
+}
+.trainer-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+.trainer-info + .trainer-info { border-top: 1px solid var(--border); }
+.trainer-info strong { min-width: 0; overflow-wrap: anywhere; }
+.trainer-profile-editor form { display: grid; gap: 16px; padding-top: 16px; }
+.training-qr,
+.qr-scanner,
+.qr-receipt {
+  display: grid;
+  gap: 18px;
+}
+.training-qr h3,
+.qr-scanner h3 {
+  font-size: 17px;
+}
+.training-qr p,
+.qr-scanner p,
+.qr-receipt p {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.training-qr-image {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin-inline: auto;
+  background: #fff;
+}
+.qr-video {
+  position: relative;
+  background: #18243a;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+.qr-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.qr-video > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+.qr-receipt dl {
+  display: grid;
+  gap: 14px;
+}
+.qr-receipt dl > div {
+  display: block;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.qr-receipt dd {
+  margin-top: 4px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.profile-photo-editor {
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.profile-photo-editor summary {
+  color: var(--primary);
+  font-size: 13px;
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 12px;
+}
+.profile-photo-editor p {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.profile-photo-editor input {
+  margin: 10px 0;
+}
+.profile-photo-editor .actions {
+  margin: 14px 0;
+}
+.profile-photo-preview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 10px auto;
+}
+.criteria-editor summary {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  min-height: 44px;
+  padding-block: 10px;
+}
+.criteria-editor p {
+  font-size: 13px;
+  margin-top: 12px;
+}
+.criteria-edit-row {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+}
+.criteria-edit-row .field {
+  flex: 1;
+}
+.criteria-grade-card {
+  border-top: 1px solid var(--border);
+  padding: 22px 0;
+  display: grid;
+  gap: 18px;
+}
+.criteria-grade-card[hidden] {
+  display: none;
+}
+.grading-search {
+  margin-top: 20px;
+}
+.grading-result-count {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.grade-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.grade-fields > button {
+  justify-self: start;
+}
+.score-slider-field {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.score-slider-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.score-slider-heading label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.score-slider-heading input {
+  width: 78px;
+  flex-shrink: 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+input.score-slider {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+input.score-slider:disabled {
+  cursor: not-allowed;
+}
+.score-slider-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+.score-slider-field .text-button {
+  min-height: 44px;
+  font-size: 12px;
+  padding-inline: 0;
+}
+.trainer-app main#main {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+.trainer-overview {
+  margin-bottom: 24px;
+}
+.trainer-account-actions {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+.profile-section-title {
+  font-size: 15px;
+  margin: 12px 0;
+}
+.trainer-app[data-page="Profil pelatih"] .heading-actions {
+  display: none;
+}
+.grade-draft-note {
+  font-size: 12px;
+  color: var(--primary);
+}
+.criteria-grade-card .section-heading {
+  margin-bottom: 0;
+}
+.score-donut-summary {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.score-donut-summary > div:last-child {
+  min-width: 0;
+}
+.score-donut-summary h2 {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.score-donut-summary p {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.score-donut-summary small {
+  font-size: 11px;
+  margin-top: 6px;
+}
+.score-donut {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--green) var(--progress), var(--hover) 0);
+}
+.score-donut::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.score-donut strong {
+  position: relative;
+  font-size: 25px;
+  text-align: center;
+  max-width: 75px;
+  line-height: 1.2;
+}
+.score-formula {
+  font-size: 11px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.score-detail-title {
+  margin: 20px 0 15px;
+  font-size: 17px;
+}
+.score-detail-card .section-heading {
+  align-items: start;
+}
+.score-detail-card .section-heading h3 {
+  font-size: 15px;
+}
+.score-detail-card .section-heading small {
+  margin-top: 4px;
+}
+.score-detail-list > div,
+.score-attendance-list > div,
+.score-points-list > div {
+  padding: 9px 0;
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.score-detail-list dd,
+.score-attendance-list dd,
+.score-points-list dd {
+  white-space: nowrap;
+}
+.score-detail-list dd small {
+  display: inline;
+  font-size: 11px;
+}
+.score-session-total dt {
+  font-weight: 700;
+  color: var(--ink);
+}
+.score-detail-list .ungraded {
+  font-size: 11px;
+  color: var(--muted);
+}
+.coach-note {
+  padding: 16px;
+  background: var(--red-soft);
+  border-radius: 7px;
+}
+.coach-note h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.coach-note p {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.member-app .month-select input {
+  width: 100%;
+  text-align: center;
+  background: var(--surface);
+}
+.member-app[data-page="Profil saya"] .page-heading,
+.app-shell[data-page="Kompetensi"] .heading-actions,
+.app-shell[data-page="Pengumuman"] .heading-actions {
+  display: none;
+}
+.member-app[data-page="Kompetensi"] .page-heading,
+.member-app[data-page="Pengumuman"] .page-heading {
+  margin: 0;
+}
+.member-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.member-tabs button {
+  flex: 1;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  min-height: 44px;
+  border-bottom: 3px solid transparent;
+}
+.member-tabs button[aria-pressed="true"] {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+.attendance-recap > div {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  font-size: 14px;
+}
+.attendance-recap dt {
+  text-transform: capitalize;
+}
+.learning-section > .section-heading {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.learning-section .section-heading p {
+  font-size: 13px;
+  margin-top: 4px;
+}
+.learning-form {
+  display: grid;
+  gap: 17px;
+  margin-top: 20px;
+}
+.learning-form p {
+  font-size: 12px;
+}
+.learning-form > button {
+  justify-self: start;
+}
+.learning-icon {
+  color: var(--primary);
+}
+.announcement-card h3,
+.competency-card h3 {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.announcement-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 14px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.competency-card > p {
+  font-size: 13px;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.competency-member {
+  margin-bottom: 22px;
+  max-width: 420px;
+}
+.competency-note {
+  background: var(--red-soft);
+  padding: 16px;
+  border-radius: 7px;
+  margin-top: 18px;
+}
+.competency-note h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 10px 0 5px;
+}
+.competency-note p {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.assessment-form {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.score-trend > p {
+  font-size: 13px;
+  margin-top: 8px;
+}
+.score-trend ul {
+  padding: 0;
+  margin: 22px 0 0;
+  list-style: none;
+}
+.score-trend li {
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+}
+.score-trend li > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.score-trend li > div:first-child span {
+  white-space: nowrap;
+}
+.score-track {
+  height: 12px;
+  background: var(--hover);
+  border-radius: 3px;
+  margin: 10px 0;
+}
+.score-track > span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+}
+.learning-section .empty svg {
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+.member-bottom-nav {
+  display: none;
+}
+.member-app main#main {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+.member-app .page-heading .eyebrow {
+  display: none;
+}
+.member-app .page-heading h1 {
+  font-size: 23px;
+  letter-spacing: -0.4px;
+}
+.member-app .page-heading p {
+  font-size: 13px;
+}
+.member-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 20px;
+}
+.member-identity > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.member-identity h2 {
+  font-size: 19px;
+}
+.member-identity p {
+  font-size: 13px;
+  margin-top: 3px;
+}
+.member-identity .status {
+  font-size: 12px;
+  padding: 4px 9px;
+}
+.member-avatar {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--red-soft);
+  color: var(--primary);
+  font-size: 24px;
+  font-weight: 700;
+  border: 3px solid var(--surface);
+}
+.member-motto {
+  background: var(--red-soft);
+  color: var(--primary);
+  padding: 17px;
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.member-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 25px;
+}
+.member-summary-card {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  text-align: left;
+  font-weight: 400;
+}
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+}
+.card-heading > span {
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+}
+.summary-content {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-top: 14px;
+}
+.summary-content strong {
+  font-size: 15px;
+}
+.summary-content small {
+  font-size: 12px;
+  margin-top: 3px;
+}
+.attendance-ring {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: conic-gradient(var(--green) var(--progress), var(--hover) 0);
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.attendance-ring::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.attendance-ring b {
+  position: relative;
+  font-size: 20px;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 65px;
+}
+.member-point-value {
+  min-width: 86px;
+  text-align: center;
+  font-size: 36px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--primary);
+}
+.member-point-value small {
+  color: var(--muted);
+  font-weight: 400;
+}
+.quick-section h2 {
+  margin-bottom: 12px;
+  font-size: 17px;
+}
+.member-quick-menu {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.member-quick-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 8px;
+  background: var(--red-soft);
+  color: var(--primary);
+  font-size: 12px;
+  min-height: 90px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+.member-quick-menu svg {
+  width: 26px;
+  height: 26px;
+}
+.member-next-session {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 10px;
+}
+.member-next-session .section-heading {
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+.member-next-session h2 {
+  font-size: 17px;
+}
+.member-next-session p {
+  font-size: 13px;
+  margin-top: 6px;
+}
+.member-next-session button {
+  margin-top: 18px;
+}
+.member-attendance-row {
+  display: grid;
+  grid-template-columns: 62px 28px minmax(0, 1fr);
+  gap: 13px;
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+  align-items: start;
+}
+.member-attendance-row time {
+  font-size: 12px;
+  line-height: 1.65;
+  font-weight: 600;
+}
+.attendance-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--hover);
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+}
+.attendance-dot.hadir {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.attendance-dot.terlambat,
+.attendance-dot.izin,
+.attendance-dot.sakit {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+.attendance-dot.alpa {
+  background: #fbecef;
+  color: #a52032;
+}
+.attendance-status {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+.member-attendance-row h3 {
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 400;
+}
+.member-attendance-row p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+.member-attendance-row button {
+  margin-top: 12px;
+  font-size: 12px;
+}
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--red-soft);
+  border-radius: 7px;
+  color: var(--primary);
+  margin-top: 12px;
+}
+.member-info svg {
+  flex-shrink: 0;
+}
+.member-info p {
+  font-size: 12px;
+}
+.member-info strong {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+  margin-top: 4px;
+}
+.member-schedule-row {
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+  margin-top: 15px;
+}
+.member-schedule-row:last-child {
+  padding-bottom: 0;
+}
+.member-schedule-row time {
+  font-size: 13px;
+  font-weight: 600;
+}
+.member-schedule-row p {
+  font-size: 13px;
+  margin: 8px 0;
+}
+.member-schedule-row button {
+  margin-top: 15px;
+}
+.member-profile .member-identity {
+  border-bottom: 1px solid var(--border);
+}
+.profile-details {
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+}
+.profile-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-details summary::before {
+  content: "+";
+  color: var(--primary);
+  font-size: 20px;
+}
+.profile-details[open] summary::before {
+  content: "−";
+}
+.profile-details p {
+  font-size: 13px;
+}
+.profile-details dd {
+  max-width: 70%;
+  overflow-wrap: anywhere;
+}
+.profile-links {
+  margin-bottom: 20px;
+}
+.profile-links button {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  text-align: left;
+  font-weight: 400;
+}
+.profile-links svg {
+  color: var(--primary);
+}
+.profile-links button span:last-child {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 21px;
+}
+.member-about {
+  padding: 20px 0;
+}
+.member-about h2 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.member-about p,
+.member-about small {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.member-score-overview {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 22px;
+  margin-bottom: 25px;
+}
+.member-score-overview > span {
+  font-size: 13px;
+}
+.member-score-overview strong {
+  display: block;
+  font-size: 36px;
+  color: var(--primary);
+}
+.member-score-overview strong small {
+  display: inline;
+  font-size: 13px;
+  margin-left: 5px;
+}
+.member-score-overview p {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 14px;
+}
+.member-score-overview small {
+  margin-top: 5px;
+}
+.install-panel {
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 8px;
+  background: var(--red-soft);
+  color: var(--ink);
+}
+.install-panel strong {
+  font-size: 14px;
+}
+.install-panel p {
+  font-size: 12px;
+  margin-top: 7px;
+}
+.install-panel button {
+  margin-top: 13px;
+  font-size: 13px;
+}
+.connection-notice {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 12px 20px;
+  background: #fff1c9;
+  color: #634300;
+  text-align: center;
+  font-size: 13px;
+}
+@media (min-width: 700px) {
+  .member-summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .member-quick-menu {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .trainer-app .topbar {
+    min-height: calc(64px + env(safe-area-inset-top));
+    height: auto;
+    padding: env(safe-area-inset-top) 16px 0;
+    gap: 8px;
+  }
+  .trainer-app .member-header-title strong {
+    font-size: 14px;
+  }
+  .trainer-app .topbar-right {
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .trainer-app .topbar-right > span {
+    display: none;
+  }
+  .trainer-app .mobile-menu {
+    background: transparent;
+    color: #fff;
+    min-height: 44px;
+    padding: 10px;
+  }
+  .trainer-app main#main {
+    padding: 20px 16px calc(95px + env(safe-area-inset-bottom));
+    max-width: 700px;
+  }
+  .trainer-app .page-heading > div:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .trainer-app .page-heading {
+    margin-bottom: 18px;
+  }
+  .trainer-app .heading-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .trainer-app .month-select {
+    width: 100%;
+    max-width: none;
+  }
+  .trainer-app .month-select input {
+    width: 100%;
+    text-align: center;
+  }
+  .trainer-app[data-page="Profil pelatih"] .page-heading,
+  .trainer-app[data-page="Kompetensi"] .page-heading,
+  .trainer-app[data-page="Pengumuman"] .page-heading {
+    margin: 0;
+  }
+  .trainer-app .panel {
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .trainer-app input,
+  .trainer-app select,
+  .trainer-app textarea {
+    font-size: 16px;
+  }
+  .trainer-app .main-footer {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .trainer-app .sidebar.open {
+    z-index: 30;
+    top: calc(64px + env(safe-area-inset-top));
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+  .trainer-app .criteria-grade-card .section-heading {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+  .member-app .sidebar {
+    display: none;
+  }
+  .member-app .topbar {
+    padding-top: env(safe-area-inset-top);
+    min-height: calc(64px + env(safe-area-inset-top));
+    height: auto;
+  }
+  .member-app .topbar-right > span {
+    display: none;
+  }
+  .member-app main#main {
+    padding: 20px 16px calc(95px + env(safe-area-inset-bottom));
+    max-width: 700px;
+  }
+  .member-app .page-heading {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .member-app .page-heading h1 {
+    font-size: 17px;
+    line-height: 1.4;
+  }
+  .member-app .page-heading p {
+    display: none;
+  }
+  .member-app .heading-actions {
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .member-app .month-select input {
+    font-size: 16px;
+    padding: 8px;
+    min-height: 44px;
+    width: 100%;
+  }
+  .member-bottom-nav {
+    display: grid;
+    min-height: var(--bottom-nav-height);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 25;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 5px max(5px, env(safe-area-inset-left))
+      calc(5px + env(safe-area-inset-bottom))
+      max(5px, env(safe-area-inset-right));
+  }
+  .member-bottom-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 2px;
+    font-size: 11px;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 6px;
+    min-height: 58px;
+    font-weight: 400;
+  }
+  .member-bottom-nav button.active {
+    color: var(--primary);
+    background: var(--red-soft);
+    font-weight: 600;
+  }
+  .member-bottom-nav svg {
+    width: 22px;
+    height: 22px;
+  }
+  .member-app .main-footer {
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 25px;
+  }
+}
+@media (max-width: 650px) {
+  .login-layout {
+    background: var(--bg);
+  }
+  .login-story {
+    background: var(--bg);
+    padding: 32px 24px 12px;
+    text-align: center;
+    align-items: center;
+    min-height: auto;
+  }
+  .login-story .brand {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .login-story .brand-mark {
+    width: 64px;
+    height: 68px;
+    font-size: 42px;
+  }
+  .login-story .brand strong {
+    font-size: 23px;
+  }
+  .login-story .brand strong span {
+    font-size: 13px;
+    margin-top: 3px;
+  }
+  .login-story > div:nth-child(2) {
+    margin-top: 20px;
+  }
+  .login-story .eyebrow,
+  .login-story h1,
+  .login-story .flag-motif {
+    display: none;
+  }
+  .login-story p {
+    font-size: 13px;
+    max-width: 290px;
+  }
+  .login-form {
+    padding: 20px 24px 40px;
+  }
+  .login-form > div > .eyebrow {
+    display: none;
+  }
+  .login-form h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+  .login-form > div > p:first-of-type {
+    text-align: center;
+    font-size: 13px;
+  }
+  .login-form input {
+    font-size: 16px;
+  }
+  .login-form .setup-note {
+    margin-top: 18px;
+  }
+  .member-identity {
+    gap: 12px;
+  }
+  .member-summary-card {
+    padding: 14px;
+  }
+  .summary-content {
+    padding-top: 10px;
+    gap: 18px;
+  }
+  .attendance-ring {
+    width: 70px;
+    height: 70px;
+  }
+  .attendance-ring b {
+    font-size: 18px;
+    max-width: 56px;
+  }
+  .member-point-value {
+    min-width: 70px;
+    font-size: 32px;
+  }
+  .member-motto {
+    padding: 13px;
+    margin-bottom: 14px;
+  }
+  .member-summary-grid {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .member-quick-menu button {
+    min-height: 80px;
+    padding: 12px 6px;
+  }
+  .member-bottom-nav button.active {
+    background: transparent;
+  }
+  .member-identity h2 {
+    font-size: 17px;
+  }
+  .member-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+  }
+  .member-app .panel {
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .member-app .history-row > p:last-of-type {
+    padding: 14px;
+    background: var(--red-soft);
+    border-radius: 6px;
+  }
+  .member-app input,
+  .member-app select,
+  .member-app textarea {
+    font-size: 16px;
+  }
+}
+@media (max-width: 359px) {
+  .member-app .page-heading {
+    flex-wrap: wrap;
+  }
+  .member-app .heading-actions,
+  .member-app .month-select,
+  .member-app .month-select input {
+    width: 100%;
+  }
+  .member-identity {
+    flex-wrap: wrap;
+  }
+  .member-attendance-row {
+    grid-template-columns: 49px 24px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .summary-content {
+    gap: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}
+@media print {
+  .page-art,
+  .member-bottom-nav,
+  .install-panel,
+  .connection-notice {
+    display: none;
+  }
+}
+
+.icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  color: inherit; /* biar ikon ikut warna teks topbar (putih) */
+}
+
+.icon-only:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.icon-only svg {
+  width: 18px;
+  height: 18px;
+}

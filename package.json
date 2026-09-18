@@ -1,0 +1,40 @@
+{
+  "name": "absensi-paskibra",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack --hostname 0.0.0.0",
+    "build": "next build --webpack",
+    "start": "next start",
+    "test": "vitest run",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@iconify/react": "^6.0.2",
+    "@supabase/supabase-js": "^2.57.0",
+    "jsqr": "^1.4.0",
+    "next": "16.3.5",
+    "qrcode": "^1.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sharp": "0.35.4",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.9.2",
+    "@electric-sql/pglite": "^0.5.8",
+    "@iconify/json": "^2.2.529",
+    "@iconify/tailwind4": "^1.2.3",
+    "@playwright/test": "^1.55.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "prettier": "3.9.6",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0",
+    "vitest": "5.0.1"
+  }
+}
