@@ -1,5 +1,7 @@
 # Arah visual
 
+Revisi ringkasan pelatih: kartu latihan hari ini berada tepat setelah identitas, diikuti empat hitungan dalam grid 2×2 di HP agar cepat dipindai. Biru mengidentifikasi seluruh anggota aktif, hijau hadir, kuning izin/sakit, dan merah alpa sesudah sesi ditutup; sebelum ditutup memakai warna netral dan label Belum absen. Ikon orang, kalender centang, dokumen izin, dan jam/silang memberi petunjuk bersama label. Ukuran kartu konsisten untuk membandingkan hitungan; tanggal dan pemilih sesi menjelaskan cakupannya, termasuk saat periode bulanan di halaman berbeda. ENERGY 2 / RHYTHM 2 / MOTION 1 mengikuti referensi pengguna.
+
 PWA Paskibra untuk pelatih dan anggota. Pengguna meminta mengganti desain awal dengan referensi aplikasi anggota biru-putih pada 16 September 2026. ENERGY 2 / RHYTHM 2 / MOTION 1.
 
 Revisi halaman awal 17 September 2026: satu kolom berpusat, tempat logo di atas judul PASKIBRA dan SMKN 5 JAKARTA yang tebal, langsung diikuti form login. Panel desktop membatasi lebar formulir; di HP konten memakai lebar layar dengan padding 24 piksel. `public/logo-paskibra.svg` adalah placeholder berlabel LOGO yang akan diganti pengguna, bukan logo sekolah rekaan. Panel promosi dan slogan awal dihapus sesuai permintaan pengguna.

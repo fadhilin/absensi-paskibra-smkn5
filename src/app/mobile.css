@@ -358,6 +358,63 @@ input.score-slider:disabled {
 .trainer-overview {
   margin-bottom: 24px;
 }
+.trainer-attendance {
+  margin-bottom: 22px;
+}
+.trainer-today {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.trainer-today > svg {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+.trainer-today > div { min-width: 0; overflow-wrap: anywhere; }
+.trainer-today h2 { font-size: 16px; }
+.trainer-today p { font-size: 12px; margin-top: 4px; }
+.trainer-today strong { display: block; font-size: 14px; margin-top: 10px; }
+.trainer-today small { display: block; margin-top: 4px; font-size: 12px; }
+.trainer-session-picker { margin-bottom: 14px; }
+.trainer-attendance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.trainer-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 12px;
+  border-radius: 10px;
+  text-align: left;
+  min-width: 0;
+  background: var(--hover);
+  color: var(--ink);
+}
+.trainer-stat > svg { width: 26px; height: 26px; flex-shrink: 0; }
+.trainer-stat > span { min-width: 0; overflow-wrap: anywhere; }
+.trainer-stat strong { display: block; font-size: 28px; line-height: 1.2; }
+.trainer-stat span > span { display: block; font-size: 13px; font-weight: 700; margin-top: 4px; }
+.trainer-stat small { display: block; font-size: 11px; margin-top: 4px; color: inherit; font-weight: 400; }
+.trainer-stat.total { background: var(--red-soft); color: var(--primary); }
+.trainer-stat.present { background: var(--green-soft); color: var(--green); }
+.trainer-stat.excused { background: var(--gold-soft); color: var(--gold); }
+.trainer-stat.absent { background: #fbecef; color: #a52032; }
+:root[data-theme="dark"] .trainer-stat.absent { background: #432a30; color: #ffb3bf; }
+@media (min-width: 700px) {
+  .trainer-attendance-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  .trainer-stat { gap: 8px; padding: 14px 10px; }
+  .trainer-stat > svg { width: 22px; height: 22px; }
+}
 .trainer-account-actions {
   display: grid;
   gap: 18px;

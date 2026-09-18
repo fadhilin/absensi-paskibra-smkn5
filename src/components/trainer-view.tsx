@@ -4,6 +4,7 @@ import { MemberIcon } from "./member-view";
 import { InstallPanel } from "./pwa";
 import { useState } from "react";
 import { ProfileAvatar, ProfilePhotoEditor } from "./profile-photo";
+import { TrainerAttendance } from "./trainer-attendance";
 
 export type TrainerPage =
   | "Dashboard"
@@ -56,11 +57,13 @@ export function TrainerOverview({
   month,
   incomplete,
   navigate,
+  onSession,
 }: {
   data: DashboardData;
   month: string;
   incomplete: number;
   navigate(page: TrainerPage): void;
+  onSession(id: string, date: string): void;
 }) {
   const sessions = data.state.sessions.filter(
     (s) => s.date.startsWith(month) && s.status !== "dibatalkan",
@@ -68,24 +71,8 @@ export function TrainerOverview({
   return (
     <section className="trainer-overview">
       <TrainerIdentity data={data} />
+      <TrainerAttendance state={data.state} onMembers={() => navigate("Anggota")} onSession={onSession} />
       <div className="member-summary-grid">
-        <button
-          className="member-summary-card"
-          onClick={() => navigate("Anggota")}
-        >
-          <span className="card-heading">
-            Anggota aktif <span aria-hidden="true">›</span>
-          </span>
-          <div className="summary-content">
-            <span className="member-point-value">
-              {data.state.members.filter((m) => m.active).length}
-            </span>
-            <div>
-              <strong>Anggota regu</strong>
-              <small>Kelola data dan akses anggota</small>
-            </div>
-          </div>
-        </button>
         <button
           className="member-summary-card"
           onClick={() => navigate("Penilaian")}

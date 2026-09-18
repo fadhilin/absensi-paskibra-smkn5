@@ -8,6 +8,7 @@ Antarmuka berbahasa Indonesia, mengutamakan penggunaan di HP, dan menyediakan te
 
 ## Fitur pelatih
 
+- **Beranda:** ringkasan latihan hari ini dengan total anggota aktif, hadir (termasuk terlambat), izin (termasuk sakit), serta belum absen atau alpa setelah sesi ditutup. Jika ada beberapa latihan, pilih sesi untuk melihat hitungannya; tombol detail membuka absensi sesi tersebut.
 - **Anggota:** tambah akun, impor CSV, cari berdasarkan nama/NIS/kelas, ubah data, aktifkan/nonaktifkan anggota, dan reset kata sandi. Foto anggota tampil dalam daftar, bersama dua diagram donat perkembangan periode terpilih (kehadiran dan nilai) serta total poin.
 - **Latihan dan absensi:** buat jadwal, tentukan lokasi serta waktu absensi, generate QR, unduh PNG atau bagikan QR, lihat rekap, dan kelola izin/sakit/koreksi dengan alasan.
 - **Penilaian:** atur kriteria, cari anggota, lalu isi nilai lewat slider atau kolom angka **0–100**.
@@ -156,7 +157,27 @@ node --env-file=.env.local scripts/create-admin.mjs
 
 Hapus variabel `ADMIN_*` setelah akun dibuat. Variabel tersebut tidak diperlukan untuk menjalankan aplikasi atau deploy ke Vercel.
 
-### 5. Jalankan aplikasi
+### 5. Ganti email atau kata sandi akun pelatih
+
+Untuk mengganti email atau kata sandi akun pelatih yang sudah ada, **jangan hapus akunnya**. Menghapus akun dapat terhalang oleh relasi profil dan akan memutus akses ke data yang terhubung. Tambahkan sementara ke `.env.local`:
+
+```dotenv
+CURRENT_ADMIN_EMAIL=email-lama@example.com
+NEW_ADMIN_EMAIL=email-baru@example.com
+NEW_ADMIN_PASSWORD=kata-sandi-baru-minimal-10-karakter
+```
+
+Untuk mengganti kata sandi saja, cukup isi `CURRENT_ADMIN_EMAIL` dan `NEW_ADMIN_PASSWORD`; hilangkan baris `NEW_ADMIN_EMAIL`. Untuk mengganti email saja, isi `CURRENT_ADMIN_EMAIL` dan `NEW_ADMIN_EMAIL`.
+
+Kemudian jalankan:
+
+```powershell
+node --env-file=.env.local scripts/change-admin-email.mjs
+```
+
+Perintah ini mempertahankan ID akun, nama pelatih, foto, dan seluruh data sekolah. Email diganti langsung dan diverifikasi. Hapus ketiga variabel `CURRENT_ADMIN_EMAIL`, `NEW_ADMIN_EMAIL`, dan `NEW_ADMIN_PASSWORD` setelah selesai.
+
+### 6. Jalankan aplikasi
 
 ```powershell
 npm run dev

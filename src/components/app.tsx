@@ -287,7 +287,7 @@ export default function App() {
     refresh();
   }, [refresh]);
   useEffect(() => {
-    if (data?.viewer.role !== "admin" || page !== "Latihan & absensi") return;
+    if (data?.viewer.role !== "admin" || !["Dashboard", "Latihan & absensi"].includes(page)) return;
     const interval = setInterval(() => {
       if (!document.hidden) refresh();
     }, 10000);
@@ -610,7 +610,12 @@ export default function App() {
     admin = data.viewer.role === "admin",
     rows = data.ranking,
     certified = isCertified(s, month),
-    periodSessions = s.sessions.filter((t) => t.date.startsWith(month)),
+    periodSessions = s.sessions
+      .filter((t) => t.date.startsWith(month))
+      .sort((a, b) =>
+        b.date.localeCompare(a.date) ||
+        Date.parse(b.opens_at) - Date.parse(a.opens_at),
+      ),
     activeSessions = periodSessions.filter((t) => t.status !== "dibatalkan");
   const incomplete = admin
     ? rows.reduce((n, r) => n + (r.incomplete || 0), 0)
@@ -967,6 +972,11 @@ export default function App() {
                 month={month}
                 incomplete={incomplete}
                 navigate={navigate}
+                onSession={(id, date) => {
+                  setMonth(date.slice(0, 7));
+                  setSessionId(id);
+                  navigate("Latihan & absensi");
+                }}
               />
               <div className="dashboard-columns">
                 <section className="panel">
@@ -991,8 +1001,7 @@ export default function App() {
                     />
                   ) : (
                     <div className="agenda-list">
-                      {[...periodSessions]
-                        .sort((a, b) => b.date.localeCompare(a.date))
+                      {periodSessions
                         .slice(0, 4)
                         .map((t) => (
                           <button
