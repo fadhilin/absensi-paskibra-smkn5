@@ -291,6 +291,36 @@ svg {
   cursor: pointer;
   font-size: 14px;
 }
+.login-password-control {
+  position: relative;
+}
+.login-fields .field > label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.login-fields .login-password-control input {
+  padding-right: 54px;
+  min-height: 48px;
+}
+.login-password-control input::-ms-reveal {
+  display: none;
+}
+.login-fields .login-password-toggle {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+}
+.login-fields .login-password-toggle:hover {
+  background: var(--hover);
+}
 .login-fields .remember-login input {
   width: 20px;
   height: 20px;

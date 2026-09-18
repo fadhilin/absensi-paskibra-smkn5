@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test("konfigurasi siap dan sesi belum ada tetap mengaktifkan formulir login", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   let remember = false;
   await page.route("**/api/app?*", (route) =>
     route.fulfill({
@@ -29,6 +30,15 @@ test("konfigurasi siap dan sesi belum ada tetap mengaktifkan formulir login", as
   await expect(page.getByText("Penyiapan layanan diperlukan")).toHaveCount(0);
   await page.getByLabel("Email", { exact: true }).fill("pelatih@example.test");
   await page.getByLabel("Kata sandi", { exact: true }).fill("password-uji");
+  const password = page.getByLabel("Kata sandi", { exact: true });
+  await expect(password).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Tampilkan kata sandi", exact: true }).click();
+  await expect(password).toHaveAttribute("type", "text");
+  await expect(password).toHaveValue("password-uji");
+  await expect(page.locator("form").getByRole("alert")).toHaveCount(0);
+  await page.getByRole("button", { name: "Sembunyikan kata sandi", exact: true }).press("Enter");
+  await expect(password).toHaveAttribute("type", "password");
+  await expect(password).toHaveValue("password-uji");
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(page.locator("form").getByRole("alert")).toContainText(
     "Email atau kata sandi tidak sesuai.",

@@ -33,6 +33,7 @@ import {
 } from "./member-view";
 import { Icon as IconifyIcon } from "@iconify/react";
 import { Avatar } from "./profile-photo";
+import { LoginPassword } from "./login-password";
 
 type Page =
   | "Dashboard"
@@ -568,15 +569,7 @@ export default function App() {
                   required
                 />
               </Field>
-              <Field label="Kata sandi">
-                <input
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Masukkan kata sandi"
-                  required
-                />
-              </Field>
+              <LoginPassword />
               <label className="remember-login">
                 <input type="checkbox" name="remember" />
                 <span>Ingat saya</span>
