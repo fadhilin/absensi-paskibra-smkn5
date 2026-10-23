@@ -122,10 +122,9 @@ export function TrainerProfile({
   const [saved, setSaved] = useState(false);
   const trainer = data.trainers.find((p) => p.id === data.viewer.id);
   const links: { page: TrainerPage; label: string; icon: string }[] = [
-    ...quickLinks,
+    { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
     { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
-    { page: "Laporan", label: "Laporan bulanan", icon: "Laporan" },
-    { page: "Pengaturan", label: "Pengaturan sekolah", icon: "Pengaturan" },
+    { page: "Laporan", label: "Laporan Penilaian", icon: "Laporan" },
   ];
   return (
     <section className="panel trainer-profile">

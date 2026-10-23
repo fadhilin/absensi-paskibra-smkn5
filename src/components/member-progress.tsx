@@ -81,7 +81,9 @@ export function MemberProgressCards({
                   metric={{
                     label: "Nilai",
                     percentage: progress.score.percentage,
-                    detail: `${progress.score.current} dari ${progress.score.maximum} nilai`,
+                    detail: progress.score.percentage === null
+                      ? "Belum ada nilai"
+                      : `Rata-rata ${(progress.score.percentage / 10).toFixed(1)} dari 10`,
                     pending: progress.score.missing
                       ? `${progress.score.missing} komponen belum dinilai`
                       : undefined,

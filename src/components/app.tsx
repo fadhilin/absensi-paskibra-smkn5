@@ -34,7 +34,10 @@ import {
 import { Icon as IconifyIcon } from "@iconify/react";
 import { Avatar } from "./profile-photo";
 import { LoginPassword } from "./login-password";
-import { AssessmentReportView } from "./assessment-report";
+import {
+  AssessmentRankingView,
+  AssessmentReportView,
+} from "./assessment-report";
 
 type Page =
   | "Dashboard"
@@ -203,6 +206,16 @@ function monthLabel(month: string) {
     year: "numeric",
   });
 }
+function nextMonth(month: string) {
+  const date = new Date(`${month}-01T00:00:00Z`);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  return date.toISOString().slice(0, 7);
+}
+function firstUnconfiguredMonth(month: string, configured: string[]) {
+  let candidate = month;
+  while (configured.includes(candidate)) candidate = nextMonth(candidate);
+  return candidate;
+}
 function dateLabel(date: string) {
   return new Date(date + "T12:00:00Z").toLocaleDateString("id-ID", {
     day: "numeric",
@@ -255,6 +268,10 @@ export default function App() {
     [sessionId, setSessionId] = useState(""),
     [modal, setModal] = useState<Modal | null>(null),
     [modalError, setModalError] = useState("");
+  const [assessmentRange, setAssessmentRange] = useState<{
+    start: string;
+    end: string;
+  } | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const requestVersion = useRef(0);
   const refresh = useCallback(async () => {
@@ -1430,20 +1447,6 @@ export default function App() {
                     </select>
                   </Field>
                 </div>
-                {selected && (
-                  <p className="inline-note">
-                    Batas keaktifan:{" "}
-                    {s.rules.find((r) => r.month === selected.date.slice(0, 7))
-                      ?.activity ?? "belum diatur"}{" "}
-                    · Batas keterampilan:{" "}
-                    {s.rules.find((r) => r.month === selected.date.slice(0, 7))
-                      ?.skill ?? "belum diatur"}
-                    .{" "}
-                    {isCertified(s, selected.date.slice(0, 7))
-                      ? "Bulan disahkan. Buka kembali untuk mengubah nilai."
-                      : ""}
-                  </p>
-                )}
                 <div className="grade-list">
                   {selectedAtt
                     .filter((a) => ["hadir", "terlambat"].includes(a.status))
@@ -1533,10 +1536,24 @@ export default function App() {
               </section>
             )}
           {page === "Laporan" && (
-            <AssessmentReportView data={data} mutate={mutate} />
+            <AssessmentReportView
+              data={data}
+              mutate={mutate}
+              initialRange={assessmentRange ?? undefined}
+            />
           )}
           {page === "Ranking bulanan" && (
-            <>
+            admin ? (
+              <AssessmentRankingView
+                data={data}
+                mutate={mutate}
+                openReport={(start, end) => {
+                  setAssessmentRange({ start, end });
+                  navigate("Laporan");
+                }}
+              />
+            ) : (
+              <>
               <section className="period-banner">
                 <div>
                   <span className="eyebrow">{monthLabel(month)}</span>
@@ -1593,7 +1610,8 @@ export default function App() {
                   Poin sama memperoleh posisi sama. Peringkat bulanan terpisah dari total sepanjang masa.
                 </div>
               </section>
-            </>
+              </>
+            )
           )}
           {page === "Penghargaan" && (
             <>
@@ -1713,8 +1731,8 @@ export default function App() {
                   <div>
                     <h2>Aturan poin bulanan</h2>
                     <p>
-                      Pelatih menentukan besaran poin. Aturan yang sudah
-                      digunakan tidak dapat diubah.
+                      Poin absensi tetap: hadir 10 dan terlambat 7. Aturan
+                      bulan yang sudah dipakai tetap mengikuti riwayatnya.
                     </p>
                   </div>
                 </div>
@@ -1726,8 +1744,8 @@ export default function App() {
                     const v = formValues(e.currentTarget);
                     await mutate("rules", {
                       month: v.month,
-                      present: Number(v.present),
-                      late: Number(v.late),
+                      present: 10,
+                      late: 7,
                       activity: 0,
                       skill: 0,
                       criteria:
@@ -1741,40 +1759,15 @@ export default function App() {
                       name="month"
                       type="month"
                       required
-                      defaultValue={month}
+                      defaultValue={firstUnconfiguredMonth(month, s.rules.map((rule) => rule.month))}
                     />
                   </Field>
-                  {[
-                    ["present", "Poin hadir"],
-                    ["late", "Poin terlambat"],
-                  ].map(([key, label]) => (
-                    <Field label={label} key={key}>
-                      <input
-                        name={key}
-                        type="number"
-                        min="0"
-                        required
-                        defaultValue={
-                          s.rules.find((r) => r.month === month)?.[
-                            key as "present"
-                          ] ?? ""
-                        }
-                      />
-                    </Field>
-                  ))}
+                  <div className="attendance-point-fixed" aria-label="Poin absensi tetap">
+                    <div><span>Hadir</span><strong>10 poin</strong></div>
+                    <div><span>Terlambat</span><strong>7 poin</strong></div>
+                  </div>
                   <button disabled={busy}>Simpan aturan poin</button>
-                  <p className="inline-note">
-                    Nilai latihan memakai skala 0–10 per kriteria. Persentase
-                    grafik membagi total nilai dengan jumlah maksimum aktual
-                    seluruh sesi dinilai, lalu dikali 100. Maksimum tiap sesi
-                    adalah 10 × jumlah kriteria, sehingga tidak memakai angka
-                    tetap. Kelola kriteria melalui menu Penilaian.
-                  </p>
                 </form>
-                <p className="inline-note">
-                  Poin terlambat tidak melebihi poin hadir. Ranking menjumlahkan
-                  poin absensi dan nilai seluruh kriteria latihan.
-                </p>
                 <div className="table-wrap">
                   <table>
                     <thead>

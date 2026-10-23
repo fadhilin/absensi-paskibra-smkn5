@@ -271,7 +271,7 @@ export function MemberOverview({
               <strong>{own?.total ?? 0} poin</strong>
               <small>
                 {scores.assessed
-                  ? `${scores.total} dari ${scores.max} nilai`
+                  ? `Rata-rata ${(scores.percentage! / 10).toFixed(1)} dari 10`
                   : "Menunggu penilaian pelatih"}
               </small>
               <small>

@@ -58,16 +58,111 @@ function reportForRange(reports: AssessmentReport[], start: string, end: string)
     .at(-1);
 }
 
+function AssessmentPeriodPicker({
+  today,
+  start,
+  end,
+  setStart,
+  setEnd,
+}: {
+  today: string;
+  start: string;
+  end: string;
+  setStart(date: string): void;
+  setEnd(date: string): void;
+}) {
+  const [preset, setPreset] = useState<Preset>(() => {
+    const options: Preset[] = ["7 hari", "14 hari", "30 hari", "1 bulan", "3 bulan", "6 bulan"];
+    return options.find((option) => {
+      const range = presetRange(option, today);
+      const normalizedStart =
+        range.start < "2026-01-01" ? "2026-01-01" : range.start;
+      return normalizedStart === start && range.end === end;
+    }) ?? "Atur tanggal";
+  });
+  function setPresetRange(value: Preset) {
+    setPreset(value);
+    if (value !== "Atur tanggal") {
+      const range = presetRange(value, today);
+      setStart(range.start < "2026-01-01" ? "2026-01-01" : range.start);
+      setEnd(range.end);
+    }
+  }
+  return (
+    <section className="panel report-period-controls">
+      <div className="section-heading">
+        <div>
+          <h2>Atur periode</h2>
+          <p>Pilih periode tetap atau tentukan tanggal mulai dan akhir.</p>
+        </div>
+      </div>
+      <label className="field">
+        <span>Periode</span>
+        <select
+          value={preset}
+          onChange={(event) => setPresetRange(event.target.value as Preset)}
+        >
+          {[
+            "7 hari",
+            "14 hari",
+            "30 hari",
+            "1 bulan",
+            "3 bulan",
+            "6 bulan",
+            "Atur tanggal",
+          ].map((item) => (
+            <option key={item}>{item}</option>
+          ))}
+        </select>
+      </label>
+      <div className="report-date-fields">
+        <label className="field">
+          <span>Tanggal mulai</span>
+          <input
+            type="date"
+            required
+            min="2026-01-01"
+            max={end}
+            value={start}
+            onChange={(event) => {
+              if (event.target.value) {
+                setPreset("Atur tanggal");
+                setStart(event.target.value);
+              }
+            }}
+          />
+        </label>
+        <label className="field">
+          <span>Tanggal akhir</span>
+          <input
+            type="date"
+            required
+            min={start < "2026-01-01" ? "2026-01-01" : start}
+            value={end}
+            onChange={(event) => {
+              if (event.target.value) {
+                setPreset("Atur tanggal");
+                setEnd(event.target.value);
+              }
+            }}
+          />
+        </label>
+      </div>
+    </section>
+  );
+}
+
 export function AssessmentReportView({
   data,
   mutate,
+  initialRange,
 }: {
   data: DashboardData;
   mutate: Mutation;
+  initialRange?: { start: string; end: string };
 }) {
   const today = schoolDate(new Date(), data.state.timezone);
-  const initial = presetRange("7 hari", today);
-  const [preset, setPreset] = useState<Preset>("7 hari");
+  const initial = initialRange ?? presetRange("7 hari", today);
   const [start, setStart] = useState(initial.start);
   const [end, setEnd] = useState(initial.end);
   const [busy, setBusy] = useState(false);
@@ -83,15 +178,6 @@ export function AssessmentReportView({
   );
   const complete = preview.every((row) => row.incomplete === 0);
   const ended = end < today;
-
-  function setPresetRange(value: Preset) {
-    setPreset(value);
-    if (value !== "Atur tanggal") {
-      const range = presetRange(value, today);
-      setStart(range.start < "2026-01-01" ? "2026-01-01" : range.start);
-      setEnd(range.end);
-    }
-  }
 
   async function certify() {
     setBusy(true);
@@ -137,56 +223,13 @@ export function AssessmentReportView({
 
   return (
     <>
-      <section className="panel report-period-controls">
-        <div className="section-heading">
-          <div>
-            <h2>Atur periode laporan</h2>
-            <p>Pilih periode tetap atau tentukan tanggal mulai dan akhir.</p>
-          </div>
-        </div>
-        <label className="field">
-          <span>Periode</span>
-          <select value={preset} onChange={(event) => setPresetRange(event.target.value as Preset)}>
-            {["7 hari", "14 hari", "30 hari", "1 bulan", "3 bulan", "6 bulan", "Atur tanggal"].map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
-        </label>
-        <div className="report-date-fields">
-          <label className="field">
-            <span>Tanggal mulai</span>
-            <input
-              type="date"
-              required
-              min="2026-01-01"
-              max={end}
-              value={start}
-              onChange={(event) => {
-                if (event.target.value) {
-                  setPreset("Atur tanggal");
-                  setStart(event.target.value);
-                }
-              }}
-            />
-          </label>
-          <label className="field">
-            <span>Tanggal akhir</span>
-            <input
-              type="date"
-              required
-              min={start < "2026-01-01" ? "2026-01-01" : start}
-              value={end}
-              onChange={(event) => {
-                if (event.target.value) {
-                  setPreset("Atur tanggal");
-                  setEnd(event.target.value);
-                }
-              }}
-            />
-          </label>
-        </div>
-        <p className="inline-note">{dateLabel(start)} sampai {dateLabel(end)}. Tanggal awal laporan tersedia mulai 1 Januari 2026.</p>
-      </section>
+      <AssessmentPeriodPicker
+        today={today}
+        start={start}
+        end={end}
+        setStart={setStart}
+        setEnd={setEnd}
+      />
 
       <section className="panel assessment-report-panel">
         <div className="section-heading wrap">
@@ -199,7 +242,7 @@ export function AssessmentReportView({
               <>
                 <span className="status good">Ranking disahkan</span>
                 <button disabled={!allGraded} onClick={downloadReport}>Unduh laporan CSV</button>
-                <button className="secondary" disabled={!allGraded} onClick={() => window.print()}>Cetak / PDF</button>
+                <button className="secondary" disabled={!allGraded} onClick={() => window.print()}>Ekspor PDF</button>
               </>
             ) : (
               <button disabled={busy || !ended || !rows.length || !complete} onClick={certify}>
@@ -261,6 +304,104 @@ export function AssessmentReportView({
                       </select>
                     ) : "Menunggu pengesahan"}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {!rows.length && <p className="empty">Tidak ada anggota dengan sesi latihan pada periode ini.</p>}
+        </div>
+      </section>
+    </>
+  );
+}
+
+export function AssessmentRankingView({
+  data,
+  mutate,
+  openReport,
+}: {
+  data: DashboardData;
+  mutate: Mutation;
+  openReport(start: string, end: string): void;
+}) {
+  const today = schoolDate(new Date(), data.state.timezone);
+  const initial = presetRange("7 hari", today);
+  const [start, setStart] = useState(initial.start);
+  const [end, setEnd] = useState(initial.end);
+  const [busy, setBusy] = useState(false);
+  const preview = useMemo(
+    () => assessmentRanking(data.state, start, end),
+    [data.state, start, end],
+  );
+  const report = reportForRange(data.state.assessment_reports ?? [], start, end);
+  const rows = report?.rows ?? preview;
+  const ended = end < today;
+  const complete = preview.length > 0 && preview.every((row) => row.incomplete === 0);
+
+  async function certify() {
+    setBusy(true);
+    await mutate("report-certify", { start, end });
+    setBusy(false);
+  }
+
+  return (
+    <>
+      <AssessmentPeriodPicker
+        today={today}
+        start={start}
+        end={end}
+        setStart={setStart}
+        setEnd={setEnd}
+      />
+      <section className="panel assessment-report-panel">
+        <div className="section-heading wrap">
+          <div>
+            <h2>Ranking periode</h2>
+            <p>{rows.length} anggota · {dateLabel(start)} - {dateLabel(end)}</p>
+          </div>
+          <div className="actions">
+            {report ? (
+              <>
+                <span className="status good">Ranking disahkan</span>
+                <button onClick={() => openReport(start, end)}>Isi predikat & buka laporan</button>
+              </>
+            ) : (
+              <button disabled={busy || !ended || !complete} onClick={certify}>
+                {busy ? "Menyimpan..." : "Sahkan ranking periode ini"}
+              </button>
+            )}
+          </div>
+        </div>
+        {!report && (
+          <p className="inline-note">
+            {!ended
+              ? "Pengesahan dapat dilakukan setelah tanggal akhir periode lewat."
+              : !preview.length
+                ? "Belum ada latihan pada periode ini."
+                : !complete
+                  ? "Lengkapi absensi dan nilai latihan sebelum mengesahkan ranking."
+                  : "Setelah disahkan, snapshot ini juga digunakan di Laporan Penilaian."}
+          </p>
+        )}
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Posisi</th>
+                <th>NIS</th>
+                <th>Nama</th>
+                <th>Jurusan</th>
+                <th className="right">Total poin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.rank}</td>
+                  <td>{row.nis}</td>
+                  <td>{row.name}</td>
+                  <td>{row.class_name}</td>
+                  <td className="right points">{row.total}</td>
                 </tr>
               ))}
             </tbody>

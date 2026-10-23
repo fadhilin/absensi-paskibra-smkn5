@@ -262,10 +262,6 @@ export function Competencies({ data, busy, mutate }: Props) {
           </div>
         </form>
       )}
-      <p className="inline-note">
-        Kompetensi tidak menambah poin ranking. Riwayat perubahan penilaian
-        dicatat untuk pelatih.
-      </p>
       {admin && (
         <label className="field competency-member">
           <span>Anggota yang dinilai</span>

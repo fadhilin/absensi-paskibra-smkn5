@@ -123,6 +123,8 @@ export function CriteriaGrading({
 }) {
   const rules = data.state.rules.find((r) => r.month === month);
   const [query, setQuery] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showReviewed, setShowReviewed] = useState(false);
   const records = data.state.attendance.filter(
     (a) =>
       a.session_id === selected?.id &&
@@ -137,7 +139,33 @@ export function CriteriaGrading({
         .includes(query.trim().toLocaleLowerCase("id"))
     );
   };
-  const found = records.filter((a) => matches(a.member_id)).length;
+  const pendingRecords = rules
+    ? records.filter((record) => {
+        const member = data.state.members.find(
+          (item) => item.id === record.member_id,
+        );
+        return (
+          member &&
+          matches(record.member_id) &&
+          !evaluation(record, rules).complete
+        );
+      })
+    : [];
+  const reviewedRecords = rules
+    ? records.filter((record) => {
+        const member = data.state.members.find(
+          (item) => item.id === record.member_id,
+        );
+        return (
+          member &&
+          matches(record.member_id) &&
+          evaluation(record, rules).complete
+        );
+      })
+    : [];
+  const visibleRecords = showReviewed
+    ? [...pendingRecords, ...reviewedRecords]
+    : pendingRecords;
   return (
     <section className="panel">
       <div className="section-heading wrap">
@@ -174,33 +202,64 @@ export function CriteriaGrading({
           onChange={(event) => setQuery(event.target.value)}
         />
       </label>
-      <p className="grading-result-count" aria-live="polite">
-        {found} dari {records.length} anggota pada latihan ini
-      </p>
       {isCertified(data.state, month) && (
         <p className="inline-note">
           Bulan sudah disahkan. Buka kembali sebelum mengubah nilai.
         </p>
       )}
+      {rules && !!reviewedRecords.length && (
+        <button
+          className="text-button grading-reviewed-toggle"
+          type="button"
+          aria-pressed={showReviewed}
+          onClick={() => {
+            setShowReviewed((value) => !value);
+            setExpandedId(null);
+          }}
+        >
+          {showReviewed
+            ? "Sembunyikan anggota yang sudah dinilai"
+            : "Tampilkan anggota yang sudah dinilai"}
+        </button>
+      )}
       {rules &&
-        records.map((a) => (
+        visibleRecords.map((a) => (
           <GradeCard
             key={`${a.id}-${JSON.stringify(a.scores)}-${JSON.stringify(rules.criteria)}`}
             record={a}
             member={data.state.members.find((m) => m.id === a.member_id)!}
             rules={rules}
-            hidden={!matches(a.member_id)}
+            expanded={expandedId === a.id}
+            onExpand={() => setExpandedId(expandedId === a.id ? null : a.id)}
             disabled={busy || isCertified(data.state, month)}
             mutate={mutate}
+            onSaved={() => {
+              setExpandedId(null);
+              setShowReviewed(false);
+            }}
           />
         ))}
-      {!!records.length && !found && (
+      {!!records.length && !visibleRecords.length && (
         <div className="empty">
-          <h3>Anggota tidak ditemukan</h3>
-          <p>Coba nama, NIS, atau kelas lain pada latihan ini.</p>
-          <button className="secondary" onClick={() => setQuery("")}>
-            Hapus pencarian
-          </button>
+          <h3>
+            {query
+              ? "Anggota tidak ditemukan"
+              : showReviewed
+                ? "Tidak ada anggota yang cocok"
+                : "Semua nilai sudah lengkap"}
+          </h3>
+          <p>
+            {query
+              ? "Coba nama, NIS, atau kelas lain pada latihan ini."
+              : showReviewed
+                ? "Ubah pencarian untuk melihat anggota lain."
+                : "Daftar ini menampilkan anggota yang masih perlu dinilai."}
+          </p>
+          {query && (
+            <button className="secondary" onClick={() => setQuery("")}>
+              Hapus pencarian
+            </button>
+          )}
         </div>
       )}
       {!records.length && (
@@ -217,16 +276,20 @@ function GradeCard({
   record,
   member,
   rules,
-  hidden,
+  expanded,
+  onExpand,
   disabled,
   mutate,
+  onSaved,
 }: {
   record: Attendance;
   member: Member;
   rules: Rules;
-  hidden: boolean;
+  expanded: boolean;
+  onExpand(): void;
   disabled: boolean;
   mutate: Mutation;
+  onSaved(): void;
 }) {
   const id = useId();
   const [note, setNote] = useState(record.note);
@@ -244,34 +307,36 @@ function GradeCard({
   const setScore = (key: string, value: number | null) =>
     setScores((previous) => ({ ...previous, [key]: value }));
   return (
-    <form
-      className="criteria-grade-card"
-      hidden={hidden}
+    <details className="criteria-grade-card" open={expanded}>
+      <summary
+        onClick={(event) => {
+          event.preventDefault();
+          onExpand();
+        }}
+      >
+        <span>{member.name}</span>
+        <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+      </summary>
+      {expanded && <form
       onSubmit={async (event) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        await mutate("grade", {
+        const saved = await mutate("grade", {
           member_id: record.member_id,
           session_id: record.session_id,
           scores,
           note,
           reason: form.get("reason") ?? "",
         });
+        if (saved) onSaved();
       }}
     >
       <div className="section-heading">
         <div>
-          <h3>{member.name}</h3>
-          <small>
-            NIS {member.nis} · {member.class_name}
-          </small>
-          <small>
-            {record.status} · {score.complete ? "Lengkap" : "Belum lengkap"}
-          </small>
+          <small>NIS {member.nis} · {member.class_name}</small>
+          <small>{record.status} · {score.complete ? "Lengkap" : "Belum lengkap"}</small>
         </div>
-        <strong>
-          {score.total} / {score.max}
-        </strong>
+        <strong>{score.total} / {score.max}</strong>
       </div>
       {dirty && <p className="grade-draft-note">Perubahan belum disimpan.</p>}
       <fieldset className="grade-fields" disabled={disabled}>
@@ -370,6 +435,7 @@ function GradeCard({
         )}
         <button type="submit">Simpan nilai</button>
       </fieldset>
-    </form>
+    </form>}
+    </details>
   );
 }

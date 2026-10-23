@@ -279,19 +279,38 @@ main#main {
 }
 .criteria-grade-card {
   border-top: 1px solid var(--border);
-  padding: 22px 0;
+  padding: 0;
+}
+.criteria-grade-card > summary {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 4px;
+  color: var(--ink);
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.criteria-grade-card > summary::-webkit-details-marker {
+  display: none;
+}
+.criteria-grade-card > summary:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.criteria-grade-card > form {
   display: grid;
   gap: 18px;
+  padding: 0 4px 20px;
 }
 .criteria-grade-card[hidden] {
   display: none;
 }
 .grading-search {
   margin-top: 20px;
-}
-.grading-result-count {
-  margin-top: 8px;
-  font-size: 13px;
 }
 .grade-fields {
   border: 0;
@@ -969,15 +988,57 @@ input.score-slider:disabled {
 }
 .report-period-controls {
   margin-bottom: 16px;
+  display: grid;
+  gap: 16px;
 }
 .report-period-controls > .field {
-  max-width: 320px;
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+}
+.report-period-controls .field select,
+.report-period-controls .field input {
+  width: 100%;
+  min-width: 0;
 }
 .report-date-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px 20px;
+  width: 100%;
+  max-width: 760px;
+  min-width: 0;
+}
+.report-date-fields > .field {
+  min-width: 0;
+}
+.report-date-fields input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.attendance-point-fixed {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  max-width: 660px;
+  max-width: 420px;
+}
+.attendance-point-fixed > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.attendance-point-fixed span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.attendance-point-fixed strong {
+  font-size: 16px;
 }
 .assessment-report-panel .table-wrap select {
   min-width: 100px;
@@ -1550,13 +1611,84 @@ input.score-slider:disabled {
   }
 }
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .app-shell > .sidebar,
+  .app-shell > .skip,
+  .main-shell > .topbar,
+  main#main > :not(.page-heading):not(.assessment-report-panel) {
+    display: none !important;
+  }
+  .main-shell {
+    margin: 0 !important;
+  }
+  main#main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .page-heading {
+    margin-bottom: 12px !important;
+  }
+  .page-heading h1 {
+    font-size: 20px !important;
+  }
   .report-period-controls,
-  .assessment-report-panel .actions {
+  .assessment-report-panel .actions,
+  .assessment-report-panel > .inline-note,
+  .assessment-report-panel .empty,
+  .success-toast {
     display: none;
   }
+  .assessment-report-panel {
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .assessment-report-panel .section-heading {
+    margin-bottom: 10px;
+  }
+  .assessment-report-panel .section-heading p {
+    color: #333 !important;
+  }
+  .assessment-report-panel .table-wrap {
+    width: 100%;
+    overflow: visible !important;
+  }
   .assessment-report-panel table {
+    width: 100%;
     min-width: 0;
-    font-size: 10px;
+    table-layout: fixed;
+    font-size: 9px;
+    color: #111 !important;
+    border-collapse: collapse;
+  }
+  .assessment-report-panel th,
+  .assessment-report-panel td {
+    padding: 6px 5px !important;
+    border: 1px solid #c8c8c8 !important;
+    color: #111 !important;
+    overflow-wrap: anywhere;
+  }
+  .assessment-report-panel select {
+    appearance: none;
+    border: 0 !important;
+    background: transparent !important;
+    color: #111 !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+  }
+  .assessment-report-panel tr {
+    break-inside: avoid;
   }
   .page-art,
   .member-bottom-nav,
