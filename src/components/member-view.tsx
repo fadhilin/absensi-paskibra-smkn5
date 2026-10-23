@@ -295,7 +295,7 @@ export function MemberOverview({
           ).map((p) => (
             <button key={p} onClick={() => navigate(p)}>
               <MemberIcon name={p} />
-              <span>{p}</span>
+              <span>{p === "Ranking bulanan" ? "Ranking" : p}</span>
             </button>
           ))}
         </div>
@@ -665,7 +665,7 @@ export function MemberProfile({
           ).map((p) => (
             <button key={p} onClick={() => navigate(p)}>
               <MemberIcon name={p} />
-              <span>{p}</span>
+              <span>{p === "Ranking bulanan" ? "Ranking" : p}</span>
               <span aria-hidden="true">›</span>
             </button>
           ))}

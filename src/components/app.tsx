@@ -907,7 +907,11 @@ export default function App() {
               <h1>
                 {page === "Dashboard"
                   ? `Selamat datang, ${admin ? "Pelatih" : data.viewer.name.split(" ")[0]}`
-                  : page === "Laporan" ? "Laporan Penilaian" : page}
+                  : page === "Laporan"
+                    ? "Laporan Penilaian"
+                    : !admin && page === "Ranking bulanan"
+                      ? "Ranking"
+                      : page}
               </h1>
               <p>
                 {page === "Dashboard" && !admin
@@ -1842,36 +1846,6 @@ export default function App() {
                     </tbody>
                   </table>
                 </div>
-              </section>
-              <section className="panel">
-                <div className="section-heading">
-                  <h2>Riwayat perubahan</h2>
-                </div>
-                {s.audits.length ? (
-                  s.audits
-                    .slice()
-                    .reverse()
-                    .slice(0, 50)
-                    .map((a) => (
-                      <details key={a.id} className="history-row">
-                        <summary>
-                          {a.action} · {new Date(a.at).toLocaleString("id-ID")}
-                        </summary>
-                        <p>
-                          {a.reason || "Pencatatan awal"} · Pelaku: {a.actor}
-                        </p>
-                        <pre>
-                          {JSON.stringify(
-                            { sebelum: a.before, sesudah: a.after },
-                            null,
-                            2,
-                          )}
-                        </pre>
-                      </details>
-                    ))
-                ) : (
-                  <p>Belum ada perubahan dicatat.</p>
-                )}
               </section>
             </>
           )}
