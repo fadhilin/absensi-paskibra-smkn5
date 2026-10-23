@@ -66,6 +66,31 @@ export type Result = {
   note: string;
   reopened_at?: string;
 };
+export type AssessmentReportRow = {
+  id: string;
+  nis: string;
+  name: string;
+  class_name: string;
+  total: number;
+  attendance: number;
+  evaluation: number;
+  hadir: number;
+  terlambat: number;
+  izin: number;
+  sakit: number;
+  alpa: number;
+  incomplete: number;
+  rank: number;
+  grade: "A" | "B" | "C" | "D" | null;
+};
+export type AssessmentReport = {
+  start: string;
+  end: string;
+  version: number;
+  certified_at: string;
+  certified_by: string;
+  rows: AssessmentReportRow[];
+};
 export type Audit = {
   id: string;
   at: string;
@@ -104,6 +129,7 @@ export type State = {
   attendance: Attendance[];
   rules: Rules[];
   results: Result[];
+  assessment_reports?: AssessmentReport[];
   audits: Audit[];
   achievements: {
     id: string;
@@ -165,6 +191,7 @@ export const emptyState = (): State => ({
   attendance: [],
   rules: [],
   results: [],
+  assessment_reports: [],
   audits: [],
   achievements: [],
 });

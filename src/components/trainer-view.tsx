@@ -30,16 +30,11 @@ export const trainerNavigation: {
   { page: "Profil pelatih", label: "Profil", icon: "Profil saya" },
 ];
 const quickLinks: { page: TrainerPage; label: string; icon: string }[] = [
-  { page: "Anggota", label: "Anggota", icon: "Anggota" },
-  { page: "Penilaian", label: "Penilaian", icon: "Perkembangan saya" },
+  { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
+  { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
   { page: "Kompetensi", label: "Kompetensi", icon: "Kompetensi" },
-  {
-    page: "Latihan & absensi",
-    label: "Jadwal & absensi",
-    icon: "Jadwal latihan",
-  },
+  { page: "Laporan", label: "Laporan Penilaian", icon: "Laporan" },
   { page: "Pengumuman", label: "Pengumuman", icon: "Pengumuman" },
-  { page: "Ranking bulanan", label: "Ranking", icon: "Penghargaan" },
 ];
 function TrainerIdentity({ data }: { data: DashboardData }) {
   return (

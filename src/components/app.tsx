@@ -34,6 +34,7 @@ import {
 import { Icon as IconifyIcon } from "@iconify/react";
 import { Avatar } from "./profile-photo";
 import { LoginPassword } from "./login-password";
+import { AssessmentReportView } from "./assessment-report";
 
 type Page =
   | "Dashboard"
@@ -83,7 +84,7 @@ const descriptions: Record<Page, string> = {
   Penilaian: "Atur kriteria dan catat nilai latihan anggota.",
   "Ranking bulanan": "Setiap latihan, setiap kontribusi, tercatat.",
   Penghargaan: "Apresiasi untuk konsistensi dan semangat berlatih.",
-  Laporan: "Rekap kehadiran dan perolehan poin per periode.",
+  Laporan: "Rekap kehadiran, total poin, dan predikat anggota per periode.",
   Pengaturan: "Identitas sekolah dan aturan poin latihan.",
   "Absensi saya": "Scan QR dari pelatih untuk mencatat kehadiran.",
   "Perkembangan saya": "Lihat rincian poin dan catatan latihan Anda.",
@@ -307,6 +308,11 @@ export default function App() {
     if (modal && !dialog.current?.open) dialog.current?.showModal();
     if (!modal && dialog.current?.open) dialog.current.close();
   }, [modal]);
+  useEffect(() => {
+    if (!notice) return;
+    const timeout = setTimeout(() => setNotice(""), 4000);
+    return () => clearTimeout(timeout);
+  }, [notice]);
   const open = (m: Modal) => {
     setModalError("");
     setModal(m);
@@ -362,6 +368,7 @@ export default function App() {
         if (!response.ok) throw new Error(result.error);
         await refresh();
       }
+      setNotice(file ? "Foto profil berhasil diperbarui." : "Foto profil berhasil dihapus.");
       return true;
     } catch (e) {
       setError(readableError(e));
@@ -378,6 +385,7 @@ export default function App() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
       await refresh();
+      setNotice("Nama profil berhasil diperbarui.");
       return true;
     } catch (error) {
       setError(readableError(error));
@@ -632,62 +640,13 @@ export default function App() {
     s.members.find((m) => m.id === id)?.name ??
     rows.find((m) => m.id === id)?.name ??
     id;
-  const exportReport = () =>
-    download(
-      `rekap-paskibra-${month}.csv`,
-      toCSV([
-        ["Periode", month],
-        ["Dibuat", new Date().toISOString()],
-        ["Status", certified ? "Disahkan" : "Sementara"],
-        [
-          "Posisi",
-          "Nama",
-          "Kelas",
-          "Hadir",
-          "Terlambat",
-          "Izin",
-          "Sakit",
-          "Alpa",
-          "Poin absensi",
-          "Nilai latihan",
-          "Total",
-          "Belum lengkap",
-          "Pemenang",
-        ],
-        ...rows.map((r) => [
-          r.rank,
-          r.name,
-          r.class_name,
-          r.hadir,
-          r.terlambat,
-          r.izin,
-          r.sakit,
-          r.alpa,
-          r.attendance,
-          r.evaluation ?? r.activity + r.skill,
-          r.total,
-          r.incomplete,
-          completed.some((c) => c.month === month && c.winners.includes(r.id))
-            ? "Ya"
-            : "",
-        ]),
-      ]),
-    );
-  const rankingsTable = (report = false) => (
+  const rankingsTable = () => (
     <div className="table-wrap">
       <table>
         <thead>
           <tr>
             <th>Posisi</th>
             <th>Anggota</th>
-            {report && (
-              <>
-                <th>H / T / I / S / A</th>
-                <th>Absensi</th>
-                <th>Nilai latihan</th>
-                <th>Belum lengkap</th>
-              </>
-            )}
             <th className="right">Total poin</th>
           </tr>
         </thead>
@@ -713,16 +672,6 @@ export default function App() {
                   </div>
                 </div>
               </td>
-              {report && (
-                <>
-                  <td>
-                    {r.hadir} / {r.terlambat} / {r.izin} / {r.sakit} / {r.alpa}
-                  </td>
-                  <td>{r.attendance}</td>
-                  <td>{r.evaluation ?? r.activity + r.skill}</td>
-                  <td>{r.incomplete}</td>
-                </>
-              )}
               <td className="right points">
                 {r.total}
                 <small> poin</small>
@@ -789,7 +738,7 @@ export default function App() {
                         : p
                 }
               />
-              {p}
+              {p === "Laporan" ? "Laporan Penilaian" : p}
               {p === "Penilaian" && incomplete > 0 && (
                 <span className="nav-count">{incomplete}</span>
               )}
@@ -843,7 +792,7 @@ export default function App() {
                 ) : page === "Perkembangan saya" ? (
                   "Nilai & kemajuan"
                 ) : (
-                  page
+                  page === "Laporan" ? "Laporan Penilaian" : page
                 )}
               </strong>
             </div>
@@ -885,7 +834,7 @@ export default function App() {
               <h1>
                 {page === "Dashboard"
                   ? `Selamat datang, ${admin ? "Pelatih" : data.viewer.name.split(" ")[0]}`
-                  : page}
+                  : page === "Laporan" ? "Laporan Penilaian" : page}
               </h1>
               <p>
                 {page === "Dashboard" && !admin
@@ -894,14 +843,16 @@ export default function App() {
               </p>
             </div>
             <div className="heading-actions">
-              <label className="month-select">
-                <span className="sr-only">Periode</span>
-                <input
-                  type="month"
-                  value={month}
-                  onChange={(e) => e.target.value && setMonth(e.target.value)}
-                />
-              </label>
+              {page !== "Laporan" && (
+                <label className="month-select">
+                  <span className="sr-only">Periode</span>
+                  <input
+                    type="month"
+                    value={month}
+                    onChange={(e) => e.target.value && setMonth(e.target.value)}
+                  />
+                </label>
+              )}
               {page === "Dashboard" && admin && (
                 <button
                   className="cta-quiet"
@@ -926,7 +877,7 @@ export default function App() {
             </div>
           )}
           {notice && (
-            <div className="notice" role="status">
+            <div className="notice success-toast" role="status">
               {notice}
               <button
                 onClick={() => setNotice("")}
@@ -1581,7 +1532,10 @@ export default function App() {
                 )}
               </section>
             )}
-          {(page === "Ranking bulanan" || page === "Laporan") && (
+          {page === "Laporan" && (
+            <AssessmentReportView data={data} mutate={mutate} />
+          )}
+          {page === "Ranking bulanan" && (
             <>
               <section className="period-banner">
                 <div>
@@ -1602,28 +1556,13 @@ export default function App() {
               <section className="panel">
                 <div className="section-heading wrap">
                   <div>
-                    <h2>
-                      {page === "Laporan" ? "Rekap bulanan" : "Ranking anggota"}
-                    </h2>
+                    <h2>Ranking anggota</h2>
                     <p>
                       {rows.length} anggota · {activeSessions.length} latihan
                       sah
                     </p>
                   </div>
                   <div className="actions">
-                    {page === "Laporan" && (
-                      <>
-                        <button className="secondary" onClick={exportReport}>
-                          Ekspor CSV
-                        </button>
-                        <button
-                          className="secondary"
-                          onClick={() => window.print()}
-                        >
-                          Cetak / PDF
-                        </button>
-                      </>
-                    )}
                     {admin && page === "Ranking bulanan" && (
                       <button
                         onClick={() =>
@@ -1649,11 +1588,9 @@ export default function App() {
                   />
                   <span>Urutan poin tertinggi</span>
                 </div>
-                {rankingsTable(page === "Laporan")}
+                {rankingsTable()}
                 <div className="panel-foot">
-                  {page === "Laporan"
-                    ? `Dibuat ${new Date().toLocaleString("id-ID")} · H hadir, T terlambat, I izin, S sakit, A alpa.`
-                    : "Poin sama memperoleh posisi sama. Peringkat bulanan terpisah dari total sepanjang masa."}
+                  Poin sama memperoleh posisi sama. Peringkat bulanan terpisah dari total sepanjang masa.
                 </div>
               </section>
             </>
@@ -1827,8 +1764,11 @@ export default function App() {
                   ))}
                   <button disabled={busy}>Simpan aturan poin</button>
                   <p className="inline-note">
-                    Nilai latihan memakai skala 0–100 per kriteria. Kelola
-                    kriterianya melalui menu Penilaian.
+                    Nilai latihan memakai skala 0–10 per kriteria. Persentase
+                    grafik membagi total nilai dengan jumlah maksimum aktual
+                    seluruh sesi dinilai, lalu dikali 100. Maksimum tiap sesi
+                    adalah 10 × jumlah kriteria, sehingga tidak memakai angka
+                    tetap. Kelola kriteria melalui menu Penilaian.
                   </p>
                 </form>
                 <p className="inline-note">
@@ -1852,7 +1792,7 @@ export default function App() {
                           <td>{monthLabel(r.month)}</td>
                           <td>{r.present}</td>
                           <td>{r.late}</td>
-                          <td>{r.criteria?.length ? "0–100" : "Skala lama"}</td>
+                          <td>{r.criteria?.length ? "0–10" : "Skala lama"}</td>
                           <td>
                             {r.criteria?.map((c) => c.name).join(", ") ??
                               `Keaktifan (${r.activity}), keterampilan (${r.skill})`}

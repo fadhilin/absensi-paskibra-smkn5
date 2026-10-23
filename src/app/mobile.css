@@ -967,6 +967,27 @@ input.score-slider:disabled {
   width: 26px;
   height: 26px;
 }
+.report-period-controls {
+  margin-bottom: 16px;
+}
+.report-period-controls > .field {
+  max-width: 320px;
+}
+.report-date-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 660px;
+}
+.assessment-report-panel .table-wrap select {
+  min-width: 100px;
+}
+.assessment-report-panel table {
+  min-width: 760px;
+}
+.assessment-report-panel .empty {
+  padding: 20px 12px;
+}
 .member-next-session {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1216,6 +1237,14 @@ input.score-slider:disabled {
   }
 }
 @media (max-width: 900px) {
+  .success-toast {
+    right: 16px;
+    bottom: calc(92px + env(safe-area-inset-bottom));
+    width: calc(100vw - 32px);
+  }
+  .report-date-fields {
+    grid-template-columns: 1fr;
+  }
   .trainer-app .topbar {
     min-height: calc(64px + env(safe-area-inset-top));
     height: auto;
@@ -1521,6 +1550,14 @@ input.score-slider:disabled {
   }
 }
 @media print {
+  .report-period-controls,
+  .assessment-report-panel .actions {
+    display: none;
+  }
+  .assessment-report-panel table {
+    min-width: 0;
+    font-size: 10px;
+  }
   .page-art,
   .member-bottom-nav,
   .install-panel,

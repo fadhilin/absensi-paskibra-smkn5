@@ -1167,6 +1167,15 @@ dd {
   gap: 14px;
   white-space: pre-wrap;
 }
+.success-toast {
+  position: fixed;
+  z-index: 120;
+  right: 24px;
+  bottom: 24px;
+  width: min(420px, calc(100vw - 32px));
+  margin: 0;
+  box-shadow: 0 8px 24px rgb(18 38 78 / 20%);
+}
 .notice.error {
   background: var(--red-soft);
   color: var(--red);

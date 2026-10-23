@@ -288,17 +288,14 @@ export function MemberOverview({
         <div className="member-quick-menu">
           {(
             [
-              "Absensi saya",
-              "Perkembangan saya",
+              "Ranking bulanan",
+              "Penghargaan",
               "Kompetensi",
-              "Jadwal latihan",
-              "Pengumuman",
-              "Profil saya",
             ] as MemberPage[]
           ).map((p) => (
             <button key={p} onClick={() => navigate(p)}>
               <MemberIcon name={p} />
-              <span>{p === "Perkembangan saya" ? "Nilai saya" : p}</span>
+              <span>{p}</span>
             </button>
           ))}
         </div>

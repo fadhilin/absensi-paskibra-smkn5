@@ -32,7 +32,7 @@ export function evaluation(a: Attendance, rules: Rules) {
   const components = rules.criteria?.length
     ? rules.criteria.map((c) => ({
         ...c,
-        max: 100,
+        max: 10,
         value: a.scores?.[c.id] ?? null,
       }))
     : [
@@ -85,7 +85,7 @@ export function parseScores(input: unknown, rules: Rules) {
         .number()
         .int()
         .min(0, "Nilai minimal 0.")
-        .max(100, "Nilai maksimal 100.")
+        .max(10, "Nilai maksimal 10.")
         .nullable(),
     )
     .parse(input);

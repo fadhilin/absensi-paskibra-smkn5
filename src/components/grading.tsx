@@ -27,9 +27,9 @@ export function CriteriaEditor({
   );
   return (
     <details className="panel criteria-editor">
-      <summary>Ketentuan penilaian · skala 0–100</summary>
+      <summary>Ketentuan penilaian · skala 0–10</summary>
       <p>
-        Setiap kriteria berbobot sama dengan nilai maksimum 100. Akumulasi nilai
+        Setiap kriteria berbobot sama dengan nilai maksimum 10. Akumulasi nilai
         masuk ke ranking bersama poin absensi. Kriteria baru membuat penilaian
         sebelumnya belum lengkap sampai nilainya diisi.
       </p>
@@ -144,7 +144,7 @@ export function CriteriaGrading({
         <div>
           <h2>Penilaian latihan</h2>
           <p>
-            Geser bar untuk memberi nilai 0–100. Kosong berarti belum dinilai.
+            Geser bar untuk memberi nilai 0–10. Kosong berarti belum dinilai.
           </p>
         </div>
         <label className="field">
@@ -284,7 +284,7 @@ function GradeCard({
                 type="number"
                 aria-label={`Nilai ${c.name}`}
                 min={0}
-                max={100}
+                max={10}
                 step={1}
                 inputMode="numeric"
                 placeholder="-"
@@ -304,13 +304,13 @@ function GradeCard({
               className="score-slider"
               type="range"
               min={0}
-              max={100}
+              max={10}
               step={1}
               value={scores[c.id] ?? 0}
               aria-valuetext={
                 scores[c.id] === null
                   ? "Belum dinilai"
-                  : `${scores[c.id]} dari 100`
+                  : `${scores[c.id]} dari 10`
               }
               onChange={(event) => setScore(c.id, Number(event.target.value))}
               onPointerDown={() => {
@@ -338,9 +338,9 @@ function GradeCard({
               <span>
                 {scores[c.id] === null
                   ? "Belum dinilai"
-                  : `${scores[c.id]} / 100`}
+                  : `${scores[c.id]} / 10`}
               </span>
-              <span>100</span>
+              <span>10</span>
             </div>
             <button
               className="text-button"

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { pointRulesSchema, rankMembers, sessionSchema } from "./domain";
-import { Attendance, State, Ranking, Viewer, Member } from "./types";
+import { AssessmentReportRow, Attendance, State, Ranking, Viewer, Member } from "./types";
 import { applyLearningAction, learningActions } from "./learning-actions";
 import {
   attendanceTotal,
@@ -82,6 +82,61 @@ export function ranking(s: State, month: string): Ranking[] {
             row.evaluation += evaluation(a, rules).total;
             row.total += points.total;
             if (!points.complete) row.incomplete++;
+          }
+        }
+        return row;
+      }),
+  );
+}
+export function assessmentRanking(
+  s: State,
+  start: string,
+  end: string,
+): AssessmentReportRow[] {
+  const sessions = s.sessions.filter(
+    (t) => t.date >= start && t.date <= end && t.status !== "dibatalkan",
+  );
+  return rankMembers(
+    s.members
+      .filter((m) => sessions.some((t) => eligible(m, t.date)))
+      .map((m) => {
+        const row: AssessmentReportRow = {
+          id: m.id,
+          nis: m.nis,
+          name: m.name,
+          class_name: m.class_name,
+          total: 0,
+          attendance: 0,
+          evaluation: 0,
+          hadir: 0,
+          terlambat: 0,
+          izin: 0,
+          sakit: 0,
+          alpa: 0,
+          incomplete: 0,
+          rank: 0,
+          grade: null,
+        };
+        for (const session of sessions.filter((t) => eligible(m, t.date))) {
+          const record = s.attendance.find(
+            (a) => a.session_id === session.id && a.member_id === m.id,
+          );
+          if (!record) {
+            row.incomplete++;
+            continue;
+          }
+          row[record.status]++;
+          if (record.status === "hadir" || record.status === "terlambat") {
+            const rules = s.rules.find((r) => r.month === session.date.slice(0, 7));
+            if (!rules) {
+              row.incomplete++;
+              continue;
+            }
+            const result = attendanceTotal(record, rules);
+            row.attendance += record.status === "hadir" ? rules.present : rules.late;
+            row.evaluation += evaluation(record, rules).total;
+            row.total += result.total;
+            if (!result.complete) row.incomplete++;
           }
         }
         return row;
@@ -198,7 +253,7 @@ export function applyAction(
       records.some((a) => a.activity !== null || a.skill !== null)
     )
       throw new Error(
-        "Periode ini sudah memiliki nilai skala lama. Gunakan skala 0–100 pada periode baru agar riwayat tidak berubah.",
+        "Periode ini sudah memiliki nilai skala lama. Gunakan skala 0–10 pada periode baru agar riwayat tidak berubah.",
       );
     if (r.criteria?.length) {
       reasonSchema.parse(reason);
@@ -377,6 +432,51 @@ export function applyAction(
       a.note = reason;
     }
     after = a;
+  } else if (action === "report-certify") {
+    const value = z
+      .object({
+        start: z.iso.date(),
+        end: z.iso.date(),
+      })
+      .refine((v) => v.start >= "2026-01-01" && v.start <= v.end, "Pilih rentang tanggal mulai 1 Januari 2026.")
+      .parse(d);
+    if (value.end >= schoolDate(now, s.timezone))
+      throw new Error("Sahkan laporan setelah rentang tanggal berakhir.");
+    const rows = assessmentRanking(s, value.start, value.end);
+    if (!rows.length) throw new Error("Belum ada latihan pada rentang ini.");
+    if (rows.some((row) => row.incomplete > 0))
+      throw new Error("Lengkapi absensi dan nilai untuk seluruh latihan pada rentang ini.");
+    s.assessment_reports ??= [];
+    const versions = s.assessment_reports.filter(
+      (report) => report.start === value.start && report.end === value.end,
+    );
+    const report = {
+      ...value,
+      version: versions.length + 1,
+      certified_at: now.toISOString(),
+      certified_by: actor.id,
+      rows,
+    };
+    s.assessment_reports.push(report);
+    after = report;
+  } else if (action === "report-grade") {
+    const value = z
+      .object({
+        start: z.iso.date(),
+        end: z.iso.date(),
+        member_id: z.string().min(1),
+        grade: z.enum(["A", "B", "C", "D"]).nullable(),
+      })
+      .parse(d);
+    const report = s.assessment_reports
+      ?.filter((item) => item.start === value.start && item.end === value.end)
+      .at(-1);
+    if (!report) throw new Error("Sahkan ranking laporan terlebih dahulu.");
+    const row = report.rows.find((item) => item.id === value.member_id);
+    if (!row) throw new Error("Anggota tidak ada pada laporan ini.");
+    before = row.grade;
+    row.grade = value.grade;
+    after = row;
   } else if (action === "certify") {
     const month = z
       .string()
@@ -470,6 +570,7 @@ export function publicView(s: State, viewer: Viewer, month: string) {
           })),
           certified_by: "",
         })),
+      assessment_reports: undefined,
     },
     ranking: rows.map((r) => ({
       id: r.id,
