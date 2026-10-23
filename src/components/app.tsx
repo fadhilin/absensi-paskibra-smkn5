@@ -605,10 +605,10 @@ export default function App() {
       <main className="loading" role="status">
         <div>
           <img
-            src="/logo-paskibra.png"
+            src="/logo-paskibra-round.png"
             width="112"
             height="112"
-            alt="Tempat logo Paskibra"
+            alt="Logo Paskibra"
             className="login-logo"
           />
         </div>
