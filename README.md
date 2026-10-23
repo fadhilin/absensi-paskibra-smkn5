@@ -11,13 +11,14 @@ Antarmuka berbahasa Indonesia, mengutamakan penggunaan di HP, dan menyediakan te
 - **Beranda:** ringkasan latihan hari ini dengan total anggota aktif, hadir (termasuk terlambat), izin (termasuk sakit), serta belum absen atau alpa setelah sesi ditutup. Jika ada beberapa latihan, pilih sesi untuk melihat hitungannya; tombol detail membuka absensi sesi tersebut.
 - **Anggota:** tambah akun, impor CSV, cari berdasarkan nama/NIS/kelas, ubah data, aktifkan/nonaktifkan anggota, dan reset kata sandi. Foto anggota tampil dalam daftar, bersama dua diagram donat perkembangan periode terpilih (kehadiran dan nilai) serta total poin.
 - **Latihan dan absensi:** buat jadwal, tentukan lokasi serta waktu absensi, generate QR, unduh PNG atau bagikan QR, lihat rekap, dan kelola izin/sakit/koreksi dengan alasan.
-- **Penilaian:** atur kriteria, cari anggota, lalu isi nilai lewat slider atau kolom angka **0–100**.
+- **Penilaian:** atur kriteria, pilih anggota yang belum dinilai, lalu buka namanya untuk mengisi nilai **0–10**. Setelah disimpan, anggota kembali ke daftar yang belum dinilai.
 - **Kompetensi:** buat katalog keterampilan dan catat tingkat penguasaan, tanggal, serta catatan anggota.
-- **Pengumuman:** simpan draf, terbitkan, ubah, dan arsipkan informasi.
-- **Ranking dan penghargaan:** lihat peringkat, sahkan hasil bulanan, buka kembali hasil dengan alasan, dan catat prestasi.
-- **Laporan:** ekspor CSV dan cetak/simpan PDF melalui browser.
-- **Pengaturan:** atur identitas sekolah, zona waktu, aturan poin, serta lihat audit perubahan.
-- **Profil:** ubah nama dan unggah/ganti/hapus foto pelatih.
+- **Pengumuman:** simpan draf, terbitkan, ubah, dan arsipkan informasi. Anggota dapat memberi komentar; ikon bel menampilkan jumlah pengumuman yang belum dibaca.
+- **Ranking:** pilih periode, lihat peringkat, lalu sahkan hasil periode. Pengesahan menyimpan snapshot yang dipakai bersama oleh ranking dan laporan penilaian.
+- **Penghargaan:** pilih anggota dan berikan penghargaan dengan nama serta catatan tersendiri. Penghargaan tidak menambah poin ranking.
+- **Laporan Penilaian:** atur periode, isi predikat A–D per anggota setelah pengesahan ranking, lalu unduh laporan Excel atau PDF.
+- **Pengaturan:** atur identitas sekolah, zona waktu, aturan poin, dan kriteria penilaian.
+- **Profil:** ubah biodata pelatih, termasuk nama, email, nomor telepon, dan foto.
 
 Navigasi bawah pelatih: **Beranda · Anggota · Absensi · Nilai · Profil**. Menu pengelolaan tambahan tersedia melalui Profil.
 
@@ -25,11 +26,11 @@ Navigasi bawah pelatih: **Beranda · Anggota · Absensi · Nilai · Profil**. Me
 
 - **Beranda:** ringkasan kehadiran, donat persentase nilai, total poin, jadwal, dan menu cepat.
 - **Absensi:** scan QR latihan, lihat hasil berupa nama, status, dan jam absensi; buka riwayat serta rekap kehadiran.
-- **Nilai:** rincian tiap latihan berisi tanggal, kehadiran, jam absensi jika tersedia, poin absensi, nilai setiap kriteria, subtotal penilaian, total poin latihan, dan catatan pelatih.
+- **Nilai:** tiap latihan ditampilkan sebagai baris yang dapat dibuka untuk melihat tanggal, kehadiran, poin absensi, nilai setiap kriteria, subtotal, total poin, dan catatan pelatih.
 - **Grafik:** diagram donat persentase akumulasi nilai dan grafik perkembangan pada bulan terpilih.
 - **Jadwal, kompetensi, dan pengumuman:** lihat jadwal latihan, catatan penguasaan pribadi, serta pengumuman yang diterbitkan.
-- **Ranking dan penghargaan:** lihat peringkat serta hasil yang tersedia tanpa membuka rincian pribadi anggota lain.
-- **Profil:** lihat data diri, unggah/ganti/hapus foto, dan buka **Info Pelatih** yang hanya menampilkan nama serta foto pelatih aktif.
+- **Ranking dan penghargaan:** lihat ranking serta penghargaan pribadi. Riwayat penghargaan anggota lain tidak ditampilkan.
+- **Profil:** lihat data diri, unggah/ganti/hapus foto, dan buka **Info Pelatih** untuk melihat nama, email, nomor telepon, dan foto pelatih.
 
 Navigasi bawah anggota: **Beranda · Absensi · Nilai · Jadwal · Profil**. Tombol **Keluar akun** berada langsung setelah menu **Penghargaan**, sebelum bagian pemasangan PWA dan Tentang aplikasi.
 
@@ -37,34 +38,35 @@ Navigasi bawah anggota: **Beranda · Absensi · Nilai · Jadwal · Profil**. Tom
 
 1. Pelatih membuat latihan dan mengatur waktu buka, batas tepat waktu, serta waktu tutup absensi.
 2. Pelatih membuka QR latihan untuk ditampilkan di tempat latihan, diunduh, atau dibagikan.
-3. Anggota login, membuka pemindai, dan mengizinkan kamera untuk membaca QR.
+3. Anggota login, lalu memindai QR dengan kamera atau memilih foto QR yang tersimpan di perangkat.
 4. Server memeriksa QR, sesi latihan, waktu, dan keanggotaan, lalu mencatat hadir atau terlambat.
 5. Anggota menerima hasil berupa nama dan jam absensi; pelatih melihat catatan pada rekap.
 
-Kamera hanya membaca QR, tanpa mengambil foto absensi atau meminta GPS/latitude/longitude. Scan ulang tidak menggandakan catatan. QR bertanda tangan digital, berlaku sampai sesi tutup, dan tidak berlaku setelah versi latihan berubah.
+Pemindai hanya membaca QR; sistem tidak mengambil foto absensi atau meminta GPS/latitude/longitude. Scan ulang tidak menggandakan catatan. QR bertanda tangan digital, berlaku sampai sesi tutup, dan tidak berlaku setelah versi latihan berubah.
 
 Absensi memerlukan koneksi internet. QR dapat diteruskan kepada orang lain sehingga sistem tidak membuktikan lokasi fisik pemindai. Sesi kedaluwarsa diproses saat API data dibaca atau transaksi berikutnya berjalan, termasuk pencatatan alpa bagi anggota yang belum absen.
 
 ## Penilaian dan perhitungan poin
 
-Setiap kriteria numerik memakai nilai bulat **0–100** dengan bobot yang sama. Pelatih dapat menambah kriteria; kriteria yang sudah memiliki nilai tidak dapat dihapus.
+Setiap kriteria numerik memakai nilai bulat **0–10** dengan bobot yang sama. Pelatih dapat menambah kriteria; kriteria yang sudah memiliki nilai tidak dapat dihapus. Jumlah latihan tidak dibatasi tetap: persentase dihitung dari sesi dan kriteria yang benar-benar masuk dalam periode.
 
 ```text
 Subtotal penilaian = jumlah nilai seluruh kriteria pada latihan
 Total poin latihan = poin absensi + subtotal penilaian
-Persentase grafik = total penilaian bulanan ÷ maksimum penilaian bulanan × 100%
+Persentase grafik = total nilai kriteria ÷ total maksimum nilai kriteria pada sesi yang dinilai × 100%
 ```
 
-Contoh: poin hadir 10 dan enam kriteria masing-masing 80 menghasilkan subtotal **480**, total poin latihan **490**, serta persentase penilaian **80%**.
+Contoh: enam kriteria masing-masing bernilai 8 dari 10 menghasilkan persentase penilaian **80%**. Poin hadir 10 ditambahkan terpisah ke total poin latihan.
 
-- Poin hadir/terlambat mengikuti aturan periode yang ditetapkan pelatih.
+- Poin hadir adalah **10** dan poin terlambat **7**. Poin absensi masuk ke ranking, tetapi tidak masuk ke persentase penilaian.
 - Ranking mengakumulasi poin absensi dan penilaian. Poin absensi tidak masuk ke persentase donat.
 - Donat menghitung kriteria dari catatan hadir/terlambat pada latihan yang tidak dibatalkan.
 - Ringkasan pada menu **Anggota** menghitung kehadiran dari sesi yang sudah dibuka, nilai dari kriteria yang sudah diisi, serta total poin dibandingkan dengan potensi poin dari sesi yang dihadiri. Sesi mendatang tidak menurunkan persentase kehadiran.
 - Nilai **0** berarti sudah dinilai; **kosong** berarti belum dinilai. Komponen kosong tetap masuk nilai maksimum, dan hasil ditandai sementara.
-- Penilaian belum lengkap menghalangi pengesahan bulan. Bulan yang telah disahkan harus dibuka kembali sebelum diubah.
+- Rentang laporan dan ranking dapat memakai 7 hari, 14 hari, 1 bulan, 3 bulan, 6 bulan, atau tanggal pilihan. Pilihan awalnya **Atur tanggal**. Rentang 7 dan 14 hari mengikuti pekan Senin–Minggu.
+- Penilaian belum lengkap menghalangi pengesahan periode. Periode yang telah disahkan harus dibuka kembali sebelum diubah.
 - Poin yang sama menghasilkan peringkat yang sama, misalnya 1, 2, 2, 4.
-- Kompetensi kualitatif dan catatan prestasi lomba tidak menambah poin ranking.
+- Kompetensi kualitatif dan penghargaan pribadi tidak menambah poin ranking.
 - Periode lama dengan skala keaktifan/keterampilan tetap memakai aturan aslinya.
 
 ## Foto profil dan identitas visual
@@ -86,7 +88,7 @@ Buat ulang ikon 192, 512, maskable 512, dan Apple Touch 180 dengan:
 node scripts/generate-icons.mjs
 ```
 
-Jika mengganti ikon, naikkan versi cache pada `public/sw.js` sebelum deploy ulang.
+Jika mengganti ikon, naikkan versi cache pada `public/sw.js` sebelum membuat build baru.
 
 ## Menjalankan lokal
 
@@ -135,7 +137,7 @@ Untuk **proyek Supabase baru**, jalankan SQL melalui SQL Editor secara berurutan
 3. `supabase/migrations/003_profile_photos.sql`
 4. `supabase/migrations/004_scoring_criteria.sql`
 
-Migrasi 003 menyiapkan penyimpanan foto profil; 004 memperbarui penilaian dan ranking. **Jika 001–004 sudah dijalankan pada proyek yang sama, tidak perlu menjalankannya ulang saat deploy.** Akun, data, dan foto yang sudah tersimpan tetap digunakan.
+Migrasi 003 menyiapkan penyimpanan foto profil; 004 memperbarui penilaian dan ranking. **Jika 001–004 sudah dijalankan pada proyek yang sama, tidak perlu menjalankannya ulang.** Akun, data, dan foto yang sudah tersimpan tetap digunakan.
 
 Nonaktifkan pendaftaran publik di pengaturan Supabase Auth. Akun anggota dibuat oleh pelatih melalui aplikasi.
 
@@ -155,7 +157,7 @@ Ganti contoh dengan data akun. Kata sandi minimal 10 karakter. Kemudian jalankan
 node --env-file=.env.local scripts/create-admin.mjs
 ```
 
-Hapus variabel `ADMIN_*` setelah akun dibuat. Variabel tersebut tidak diperlukan untuk menjalankan aplikasi atau deploy ke Vercel.
+Hapus variabel `ADMIN_*` setelah akun dibuat. Variabel tersebut tidak diperlukan untuk menjalankan aplikasi.
 
 ### 5. Ganti email atau kata sandi akun pelatih
 
@@ -194,28 +196,6 @@ npm run build
 npm run start
 ```
 
-## Deployment melalui GitHub dan Vercel
-
-1. Push kode proyek ke repository GitHub. Sertakan `package.json`, `package-lock.json`, `src`, `public`, dan konfigurasi proyek. `.gitignore` mengecualikan environment lokal, dependensi, build, serta hasil pengujian.
-2. Di Vercel, pilih **Add New → Project**, lalu impor repository.
-3. Pilih **Next.js**, Root Directory yang memuat `package.json` (`./` jika di akar repository), dan Node.js **24.x**.
-4. Isi Install Command dengan `npm ci`, Build Command dengan `npm run build`, dan biarkan Output Directory mengikuti default Next.js.
-5. Tambahkan empat environment aplikasi untuk **Production**, menggunakan nilai dari `.env.local` atau proyek Supabase tujuan. Masukkan nilainya tanpa tanda kutip. Tombol **Add** pada integrasi Supabase opsional tidak perlu digunakan jika environment diisi manual.
-6. Klik **Deploy**, tunggu status **Ready**, lalu buka domain HTTPS yang diberikan.
-7. Uji login kedua peran, foto profil, nilai, dan scan QR melalui HP. Jika memakai Supabase yang sama, gunakan akun yang sudah ada.
-
-Untuk mengirim pembaruan dari repository lokal yang sudah terhubung:
-
-```powershell
-git add .
-git commit -m "Perbarui aplikasi Paskibra"
-git push
-```
-
-Push ke branch produksi yang terhubung memicu deployment baru. Setelah mengubah environment Vercel, pilih **Redeploy**. Folder `.github/workflows` bersifat opsional untuk GitHub Actions dan tidak diperlukan oleh deployment Vercel.
-
-Aplikasi membutuhkan server Next.js untuk API. GitHub Pages tidak dapat menjalankan keseluruhan aplikasi ini.
-
 ## Memasang PWA di HP
 
 - **Android:** buka domain HTTPS di browser, lalu pilih opsi instalasi aplikasi atau tambahkan ke layar utama jika tersedia.
@@ -233,7 +213,7 @@ Service worker hanya menyimpan halaman offline dan ikon publik. Data akun, absen
 - Sharp untuk pemrosesan foto, Zod untuk validasi, serta QRCode/jsQR untuk QR.
 - Vitest dan PGlite untuk pengujian logika/database; Playwright untuk browser.
 
-Data sekolah disimpan dalam satu dokumen JSONB di `school_state`: anggota, latihan, absensi, aturan, hasil bulanan, prestasi, kompetensi, pengumuman, profil pelatih, dan audit. Identitas autentikasi berada di `profiles`/Supabase Auth. Berkas foto disimpan terpisah di Storage.
+Data sekolah disimpan dalam satu dokumen JSONB di `school_state`: anggota, latihan, absensi, aturan, hasil periode, penghargaan, kompetensi, pengumuman dan komentar, profil pelatih, serta audit internal. Identitas autentikasi berada di `profiles`/Supabase Auth. Berkas foto disimpan terpisah di Storage.
 
 Perubahan memakai pemeriksaan revision dan retry untuk menangani pembaruan serentak. Ranking produksi dihitung melalui fungsi SQL. Anggota menerima data pribadi sendiri serta informasi yang dibagikan melalui API, bukan akses langsung ke seluruh dokumen sekolah. Penyimpanan satu dokumen perlu dievaluasi kembali jika volume data atau jumlah pengguna tumbuh besar.
 
