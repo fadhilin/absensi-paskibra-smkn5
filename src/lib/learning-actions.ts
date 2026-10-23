@@ -35,6 +35,7 @@ export function applyLearningAction(
     const after = {
       ...value,
       id: current?.id ?? crypto.randomUUID(),
+      comments: current?.comments ?? [],
       updated_at: now.toISOString(),
       published_at:
         value.status === "published"

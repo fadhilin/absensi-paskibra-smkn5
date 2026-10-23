@@ -6,7 +6,7 @@ import { toXlsx } from "@/lib/xlsx";
 import { createAssessmentPdf } from "@/lib/assessment-pdf";
 import type { AssessmentReport, DashboardData } from "@/lib/types";
 
-type Preset = "7 hari" | "14 hari" | "30 hari" | "1 bulan" | "3 bulan" | "6 bulan" | "Atur tanggal";
+type Preset = "7 hari" | "14 hari" | "1 bulan" | "3 bulan" | "6 bulan" | "Atur tanggal";
 type Mutation = (action: string, input: unknown) => Promise<boolean>;
 
 function shiftDay(date: string, days: number) {
@@ -37,7 +37,6 @@ function presetRange(preset: Preset, today: string) {
   const sunday = shiftDay(monday, 6);
   if (preset === "7 hari") return { start: monday, end: sunday };
   if (preset === "14 hari") return { start: shiftDay(monday, -7), end: sunday };
-  if (preset === "30 hari") return { start: shiftDay(sunday, -29), end: sunday };
   if (preset === "1 bulan")
     return { start: `${today.slice(0, 7)}-01`, end: monthEnd(today) };
   const months = preset === "3 bulan" ? 3 : 6;
@@ -88,15 +87,7 @@ function AssessmentPeriodPicker({
   setStart(date: string): void;
   setEnd(date: string): void;
 }) {
-  const [preset, setPreset] = useState<Preset>(() => {
-    const options: Preset[] = ["7 hari", "14 hari", "30 hari", "1 bulan", "3 bulan", "6 bulan"];
-    return options.find((option) => {
-      const range = presetRange(option, today);
-      const normalizedStart =
-        range.start < "2026-01-01" ? "2026-01-01" : range.start;
-      return normalizedStart === start && range.end === end;
-    }) ?? "Atur tanggal";
-  });
+  const [preset, setPreset] = useState<Preset>("Atur tanggal");
   function setPresetRange(value: Preset) {
     setPreset(value);
     if (value !== "Atur tanggal") {
@@ -122,7 +113,6 @@ function AssessmentPeriodPicker({
           {[
             "7 hari",
             "14 hari",
-            "30 hari",
             "1 bulan",
             "3 bulan",
             "6 bulan",

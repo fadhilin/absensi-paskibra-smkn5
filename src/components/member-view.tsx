@@ -644,7 +644,15 @@ export function MemberProfile({
                       : ""
                   }
                 />
-                <strong>{trainer.name}</strong>
+                <div className="trainer-contact">
+                  <strong>{trainer.name}</strong>
+                  {trainer.email && (
+                    <a href={`mailto:${trainer.email}`}>{trainer.email}</a>
+                  )}
+                  {trainer.phone && (
+                    <a href={`tel:${trainer.phone}`}>{trainer.phone}</a>
+                  )}
+                </div>
               </div>
             ))
           ) : (

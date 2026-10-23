@@ -115,12 +115,14 @@ export function TrainerProfile({
   toggleTheme(): void;
   logout(): void;
   onPhotoSave(file: Blob | null): Promise<boolean>;
-  onProfileSave(name: string): Promise<boolean>;
+  onProfileSave(name: string, email: string, phone: string): Promise<boolean>;
 }) {
-  const [name, setName] = useState(data.viewer.name);
+  const trainer = data.trainers.find((p) => p.id === data.viewer.id);
+  const [name, setName] = useState(trainer?.name ?? data.viewer.name);
+  const [email, setEmail] = useState(trainer?.email ?? "");
+  const [phone, setPhone] = useState(trainer?.phone ?? "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const trainer = data.trainers.find((p) => p.id === data.viewer.id);
   const links: { page: TrainerPage; label: string; icon: string }[] = [
     { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
     { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
@@ -137,14 +139,14 @@ export function TrainerProfile({
         onSave={onPhotoSave}
       />
       <details className="profile-details trainer-profile-editor">
-        <summary>Edit nama pelatih</summary>
+        <summary>Edit biodata pelatih</summary>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
             setSaving(true);
             setSaved(false);
             try {
-              setSaved(await onProfileSave(name));
+              setSaved(await onProfileSave(name, email, phone));
             } finally {
               setSaving(false);
             }
@@ -164,10 +166,36 @@ export function TrainerProfile({
               disabled={saving}
             />
           </label>
+          <label className="field">
+            <span>Email untuk anggota</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setSaved(false);
+              }}
+              maxLength={254}
+              disabled={saving}
+            />
+          </label>
+          <label className="field">
+            <span>Nomor telepon</span>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(event) => {
+                setPhone(event.target.value);
+                setSaved(false);
+              }}
+              maxLength={30}
+              disabled={saving}
+            />
+          </label>
           <button disabled={saving}>
-            {saving ? "Menyimpan..." : "Simpan nama"}
+            {saving ? "Menyimpan..." : "Simpan biodata"}
           </button>
-          {saved && <p role="status">Nama pelatih diperbarui.</p>}
+          {saved && <p role="status">Biodata pelatih diperbarui.</p>}
         </form>
       </details>
       <h2 className="profile-section-title">Kelola Paskibra</h2>

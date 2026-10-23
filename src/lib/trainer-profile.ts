@@ -18,10 +18,18 @@ export function updateTrainerProfile(
   input: unknown,
 ) {
   const value = z
-    .object({ name: z.string().trim().min(2).max(100) })
+    .object({
+      name: z.string().trim().min(2).max(100),
+      email: z.string().trim().email().or(z.literal("")).default(""),
+      phone: z.string().trim().max(30).default(""),
+    })
     .parse(input);
   const profile = trainerProfile(state, viewer);
-  const before = { name: profile.name };
+  const before = {
+    name: profile.name,
+    email: profile.email ?? "",
+    phone: profile.phone ?? "",
+  };
   Object.assign(profile, value);
   state.audits.push({
     id: crypto.randomUUID(),
@@ -45,6 +53,8 @@ export function trainerDirectory(
       return {
         id: account.id,
         name: profile?.name ?? account.name,
+        email: profile?.email ?? "",
+        phone: profile?.phone ?? "",
         has_photo: !!profile?.photo_path,
         photo_updated_at: profile?.photo_updated_at,
       };

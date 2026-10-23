@@ -143,6 +143,8 @@ export type Viewer = { id: string; name: string; role: "admin" | "member" };
 export type TrainerProfile = {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
   photo_path?: string;
   photo_updated_at?: string;
 };
@@ -153,9 +155,17 @@ export type Announcement = {
   id: string;
   title: string;
   body: string;
+  comments?: AnnouncementComment[];
   status: "draft" | "published" | "archived";
   published_at: string | null;
   updated_at: string;
+};
+export type AnnouncementComment = {
+  id: string;
+  member_id: string;
+  member_name: string;
+  body: string;
+  created_at: string;
 };
 export type Competency = {
   id: string;

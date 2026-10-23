@@ -101,88 +101,90 @@ export function MemberScores({
               const attendancePoints = points.total - score.total;
               const checkedInAt = a.qr_checkin?.received_at ?? a.evidence?.received_at;
               return (
-                <article className="panel score-detail-card" key={a.id}>
-                  <div className="section-heading">
-                    <div>
-                      <h3>{t.title}</h3>
+                <details className="panel score-detail-card" key={a.id}>
+                  <summary className="score-session-summary">
+                    <span className="score-session-title">
+                      <strong>{t.title}</strong>
                       <small>
                         {new Date(t.date + "T12:00:00Z").toLocaleDateString(
                           "id-ID",
                           { day: "numeric", month: "long", year: "numeric" },
                         )}
                       </small>
-                    </div>
-                    <span className="status">
+                    </span>
+                    <span className={`status${score.complete ? " good" : ""}`}>
                       {score.complete ? "Lengkap" : "Belum lengkap"}
                     </span>
-                  </div>
-                  <dl className="score-attendance-list">
-                    <div>
-                      <dt>Kehadiran</dt>
-                      <dd>{a.status === "hadir" ? "Hadir" : "Terlambat"}</dd>
-                    </div>
-                    {checkedInAt && (
+                  </summary>
+                  <div className="score-session-content">
+                    <dl className="score-attendance-list">
                       <div>
-                        <dt>Jam absensi</dt>
-                        <dd>
-                          {new Date(checkedInAt).toLocaleTimeString("id-ID", {
-                            timeZone: "Asia/Jakarta",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })} WIB
-                        </dd>
+                        <dt>Kehadiran</dt>
+                        <dd>{a.status === "hadir" ? "Hadir" : "Terlambat"}</dd>
                       </div>
+                      {checkedInAt && (
+                        <div>
+                          <dt>Jam absensi</dt>
+                          <dd>
+                            {new Date(checkedInAt).toLocaleTimeString("id-ID", {
+                              timeZone: "Asia/Jakarta",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })} WIB
+                          </dd>
+                        </div>
+                      )}
+                      <div>
+                        <dt>Poin absensi</dt>
+                        <dd><strong>{attendancePoints}</strong> poin</dd>
+                      </div>
+                    </dl>
+                    <h4>Rincian penilaian</h4>
+                    <dl className="score-detail-list">
+                      {score.components.map((c) => (
+                        <div key={c.id}>
+                          <dt>{c.name}</dt>
+                          <dd>
+                            {c.value === null ? (
+                              <span className="ungraded">Belum dinilai</span>
+                            ) : (
+                              <>
+                                <strong>{c.value}</strong>
+                                <small> / {c.max}</small>
+                              </>
+                            )}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <dl className="score-points-list">
+                      <div>
+                        <dt>Subtotal penilaian</dt>
+                        <dd>{score.total} poin</dd>
+                      </div>
+                      <div className="score-session-total">
+                        <dt>Total poin latihan</dt>
+                        <dd><strong>{points.total}</strong> poin</dd>
+                      </div>
+                    </dl>
+                    <p className="score-formula">
+                      {attendancePoints} poin absensi + {score.total} poin penilaian.
+                      {!score.complete && " Total sementara; masih ada komponen yang belum dinilai."}
+                    </p>
+                    <div className="coach-note">
+                      <h4>Catatan pelatih</h4>
+                      <p>{a.note || "Belum ada catatan."}</p>
+                    </div>
+                    {a.evidence && (
+                      <button
+                        className="text-button"
+                        onClick={() => onEvidence(a.id)}
+                      >
+                        Lihat bukti absensi saya
+                      </button>
                     )}
-                    <div>
-                      <dt>Poin absensi</dt>
-                      <dd><strong>{attendancePoints}</strong> poin</dd>
-                    </div>
-                  </dl>
-                  <h4>Rincian penilaian</h4>
-                  <dl className="score-detail-list">
-                    {score.components.map((c) => (
-                      <div key={c.id}>
-                        <dt>{c.name}</dt>
-                        <dd>
-                          {c.value === null ? (
-                            <span className="ungraded">Belum dinilai</span>
-                          ) : (
-                            <>
-                              <strong>{c.value}</strong>
-                              <small> / {c.max}</small>
-                            </>
-                          )}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <dl className="score-points-list">
-                    <div>
-                      <dt>Subtotal penilaian</dt>
-                      <dd>{score.total} poin</dd>
-                    </div>
-                    <div className="score-session-total">
-                      <dt>Total poin latihan</dt>
-                      <dd><strong>{points.total}</strong> poin</dd>
-                    </div>
-                  </dl>
-                  <p className="score-formula">
-                    {attendancePoints} poin absensi + {score.total} poin penilaian.
-                    {!score.complete && " Total sementara; masih ada komponen yang belum dinilai."}
-                  </p>
-                  <div className="coach-note">
-                    <h4>Catatan pelatih</h4>
-                    <p>{a.note || "Belum ada catatan."}</p>
                   </div>
-                  {a.evidence && (
-                    <button
-                      className="text-button"
-                      onClick={() => onEvidence(a.id)}
-                    >
-                      Lihat bukti absensi saya
-                    </button>
-                  )}
-                </article>
+                </details>
               );
             })}
           {!records.length && (

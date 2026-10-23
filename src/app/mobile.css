@@ -185,12 +185,23 @@ main#main {
 }
 .trainer-info {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 16px;
   padding: 16px 0;
 }
 .trainer-info + .trainer-info { border-top: 1px solid var(--border); }
 .trainer-info strong { min-width: 0; overflow-wrap: anywhere; }
+.trainer-contact {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.trainer-contact a {
+  color: var(--primary);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
 .trainer-profile-editor form { display: grid; gap: 16px; padding-top: 16px; }
 .training-qr,
 .qr-scanner,
@@ -657,6 +668,39 @@ input.score-slider:disabled {
 .score-detail-card .section-heading small {
   margin-top: 4px;
 }
+.score-session-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  cursor: pointer;
+  list-style: none;
+}
+.score-session-summary::-webkit-details-marker { display: none; }
+.score-session-summary::after {
+  content: "⌄";
+  flex: 0 0 auto;
+  color: var(--primary);
+  font-size: 20px;
+  line-height: 1;
+}
+.score-detail-card[open] .score-session-summary::after { content: "⌃"; }
+.score-session-title {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+.score-session-title strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.score-session-title small { font-size: 12px; }
+.score-session-summary .status { flex: 0 0 auto; }
+.score-session-content {
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
 .score-detail-list > div,
 .score-attendance-list > div,
 .score-points-list > div {
@@ -771,6 +815,47 @@ input.score-slider:disabled {
   font-size: 14px;
   line-height: 1.7;
 }
+.announcement-comments {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.announcement-comments > h4 {
+  font-size: 14px;
+}
+.announcement-comment {
+  display: grid;
+  gap: 7px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.announcement-comment > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.announcement-comment strong { font-size: 13px; }
+.announcement-comment time {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+}
+.announcement-comment p {
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.announcement-comment-form {
+  display: grid;
+  gap: 12px;
+}
+.announcement-comment-form button { justify-self: start; }
 .competency-card > p {
   font-size: 13px;
   margin: 8px 0;
@@ -1319,6 +1404,11 @@ input.score-slider:disabled {
   }
 }
 @media (max-width: 900px) {
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+  }
   .success-toast {
     right: 16px;
     bottom: calc(92px + env(safe-area-inset-bottom));

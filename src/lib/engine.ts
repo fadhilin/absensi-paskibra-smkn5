@@ -212,11 +212,38 @@ export function applyAction(
   input: unknown,
   now = new Date(),
 ): State {
-  if (actor.role !== "admin")
+  if (actor.role !== "admin" && action !== "announcement_comment")
     throw new Error("Hanya pelatih dapat melakukan tindakan ini.");
   const s = structuredClone(original);
   closeExpired(s, now);
   const d = z.record(z.string(), z.unknown()).parse(input);
+  if (action === "announcement_comment") {
+    if (actor.role !== "member")
+      throw new Error("Hanya anggota yang dapat mengirim tanggapan.");
+    const value = z
+      .object({
+        announcement_id: z.string().min(1),
+        body: z.string().trim().min(1).max(1000),
+      })
+      .parse(d);
+    const announcement = s.announcements?.find(
+      (item) => item.id === value.announcement_id && item.status === "published",
+    );
+    if (!announcement) throw new Error("Pengumuman tidak tersedia.");
+    const member = s.members.find(
+      (item) => item.id === actor.id && item.active,
+    );
+    if (!member) throw new Error("Anggota tidak aktif.");
+    announcement.comments ??= [];
+    announcement.comments.push({
+      id: crypto.randomUUID(),
+      member_id: member.id,
+      member_name: member.name,
+      body: value.body,
+      created_at: now.toISOString(),
+    });
+    return s;
+  }
   let before: unknown = null,
     after: unknown = d;
   const reason = typeof d.reason === "string" ? d.reason : "";

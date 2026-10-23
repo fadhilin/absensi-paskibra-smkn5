@@ -273,6 +273,7 @@ export default function App() {
     start: string;
     end: string;
   } | null>(null);
+  const [awardMemberId, setAwardMemberId] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const requestVersion = useRef(0);
   const refresh = useCallback(async () => {
@@ -430,12 +431,12 @@ export default function App() {
       return false;
     }
   }
-  async function saveTrainerProfile(name: string) {
+  async function saveTrainerProfile(name: string, email: string, phone: string) {
     try {
       const response = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, email, phone }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
@@ -694,6 +695,15 @@ export default function App() {
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
+  const selectedAwardMember = admin
+    ? s.members.find((member) => member.id === awardMemberId)
+    : undefined;
+  const selectedAwardHistory = selectedAwardMember
+    ? s.achievements
+        .filter((award) => award.member_id === selectedAwardMember.id)
+        .slice()
+        .sort((a, b) => b.date.localeCompare(a.date))
+    : [];
   const selectedAtt = selected
     ? s.attendance.filter((a) => a.session_id === selected.id)
     : [];
@@ -1679,17 +1689,12 @@ export default function App() {
                 <Icon name="Penghargaan" />
                 <span className="eyebrow">Apresiasi anggota</span>
                 <h2>Penghargaan anggota</h2>
-                <p>
-                  Catat pencapaian tiap anggota secara terpisah dari hasil
-                  ranking.
-                </p>
               </section>
-              {admin && (
+              {admin && !selectedAwardMember && (
                 <section className="panel">
                   <div className="section-heading wrap">
                     <div>
                       <h2>Pilih anggota</h2>
-                      <p>Pilih nama untuk mencatat penghargaan khusus.</p>
                     </div>
                     <label className="field">
                       <span>Cari anggota</span>
@@ -1704,15 +1709,12 @@ export default function App() {
                   {visibleMembers.map((member) => (
                     <button
                       type="button"
-                      className="history-row award-member-button"
+                      className={`history-row award-member-button${
+                        awardMemberId === member.id ? " selected" : ""
+                      }`}
+                      aria-pressed={awardMemberId === member.id}
                       key={member.id}
-                      onClick={() =>
-                        open({
-                          kind: "achievement",
-                          title: `Beri penghargaan untuk ${member.name}`,
-                          data: member,
-                        })
-                      }
+                      onClick={() => setAwardMemberId(member.id)}
                     >
                       <strong>{member.name}</strong>
                       <span>{member.nis} · {member.class_name}</span>
@@ -1722,24 +1724,59 @@ export default function App() {
                   {!visibleMembers.length && <p>Anggota tidak ditemukan.</p>}
                 </section>
               )}
-              <section className="panel">
-                <div className="section-heading">
-                  <div>
+              {admin && selectedAwardMember && (
+                <section className="panel">
+                  <div className="section-heading wrap">
+                    <div>
+                      <button
+                        className="text-button"
+                        onClick={() => setAwardMemberId(null)}
+                      >
+                        ‹ Kembali ke daftar anggota
+                      </button>
+                      <h2>{selectedAwardMember.name}</h2>
+                      <p>{selectedAwardMember.nis} · {selectedAwardMember.class_name}</p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        open({
+                          kind: "achievement",
+                          title: `Beri penghargaan untuk ${selectedAwardMember.name}`,
+                          data: selectedAwardMember,
+                        })
+                      }
+                    >
+                      + Tambah penghargaan
+                    </button>
+                  </div>
+                  <h3>Riwayat penghargaan</h3>
+                  {selectedAwardHistory.map((award) => (
+                    <div className="history-row" key={award.id}>
+                      <strong>{award.title}</strong>
+                      <p>{dateLabel(award.date)}</p>
+                      {award.note && <small>{award.note}</small>}
+                    </div>
+                  ))}
+                  {!selectedAwardHistory.length && (
+                    <p>Belum ada penghargaan untuk anggota ini.</p>
+                  )}
+                </section>
+              )}
+              {!admin && (
+                <section className="panel">
+                  <div className="section-heading">
                     <h2>Riwayat penghargaan</h2>
-                    <p>Penghargaan khusus dicatat terpisah dari ranking.</p>
                   </div>
-                </div>
-                {s.achievements.map((a) => (
-                  <div className="history-row" key={a.id}>
-                    <strong>{a.title}</strong>
-                    <p>
-                      {memberName(a.member_id)} · {dateLabel(a.date)}
-                    </p>
-                    {a.note && <small>{a.note}</small>}
-                  </div>
-                ))}
-                {!s.achievements.length && <p>Belum ada penghargaan dicatat.</p>}
-              </section>
+                  {s.achievements.map((a) => (
+                    <div className="history-row" key={a.id}>
+                      <strong>{a.title}</strong>
+                      <p>{dateLabel(a.date)}</p>
+                      {a.note && <small>{a.note}</small>}
+                    </div>
+                  ))}
+                  {!s.achievements.length && <p>Belum ada penghargaan dicatat.</p>}
+                </section>
+              )}
             </>
           )}
           {page === "Pengaturan" && (

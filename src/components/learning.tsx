@@ -146,6 +146,56 @@ export function Announcements({ data, busy, mutate }: Props) {
                 Ubah pengumuman
               </button>
             )}
+            <section className="announcement-comments">
+              <h4>Tanggapan ({a.comments?.length ?? 0})</h4>
+              {a.comments?.map((comment) => (
+                <article className="announcement-comment" key={comment.id}>
+                  <div>
+                    <strong>{comment.member_name}</strong>
+                    <time dateTime={comment.created_at}>
+                      {new Date(comment.created_at).toLocaleString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                  </div>
+                  <p>{comment.body}</p>
+                </article>
+              ))}
+              {!admin && (
+                <form
+                  className="announcement-comment-form"
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    const form = event.currentTarget;
+                    const body = new FormData(form).get("body");
+                    if (typeof body !== "string") return;
+                    if (
+                      await mutate("announcement_comment", {
+                        announcement_id: a.id,
+                        body,
+                      })
+                    )
+                      form.reset();
+                  }}
+                >
+                  <label className="field">
+                    <span>Tulis tanggapan</span>
+                    <textarea
+                      name="body"
+                      required
+                      maxLength={1000}
+                      rows={3}
+                      placeholder="Bagikan tanggapan Anda"
+                    />
+                  </label>
+                  <button disabled={busy}>Kirim tanggapan</button>
+                </form>
+              )}
+            </section>
           </article>
         ))
       ) : (
