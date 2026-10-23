@@ -219,13 +219,21 @@ export function AssessmentReportView({
       ["Laporan Penilaian"],
       ["Periode", `${dateLabel(start)} - ${dateLabel(end)}`],
       ["Disahkan", new Date(report.certified_at).toLocaleString("id-ID")],
-      ["No.", "NIS", "Nama", "Jurusan", "Kehadiran H/T/I/S/A", "Total poin", "Predikat"],
+      [
+        "No.",
+        "NIS",
+        "Nama",
+        "Jurusan",
+        "H/T/S/I/A",
+        "Total poin",
+        "Predikat",
+      ],
       ...rows.map((row, index) => [
         index + 1,
         row.nis,
         row.name,
         row.class_name,
-        `${row.hadir}/${row.terlambat}/${row.izin}/${row.sakit}/${row.alpa}`,
+        `${row.hadir}/${row.terlambat}/${row.sakit}/${row.izin}/${row.alpa}`,
         row.total,
         row.grade,
       ]),
@@ -323,7 +331,7 @@ export function AssessmentReportView({
                 <th>NIS</th>
                 <th>Nama</th>
                 <th>Jurusan</th>
-                <th>Kehadiran H/T/I/S/A</th>
+                <th>H/T/S/I/A</th>
                 <th className="right">Total poin</th>
                 <th>Predikat</th>
               </tr>
@@ -335,7 +343,9 @@ export function AssessmentReportView({
                   <td>{row.nis}</td>
                   <td>{row.name}</td>
                   <td>{row.class_name}</td>
-                  <td>{row.hadir}/{row.terlambat}/{row.izin}/{row.sakit}/{row.alpa}</td>
+                  <td>
+                    {row.hadir}/{row.terlambat}/{row.sakit}/{row.izin}/{row.alpa}
+                  </td>
                   <td className="right points">{row.total}</td>
                   <td>
                     {report ? (

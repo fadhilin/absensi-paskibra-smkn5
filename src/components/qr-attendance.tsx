@@ -149,6 +149,7 @@ export function QrScanner({
   onDone(): void;
 }) {
   const video = useRef<HTMLVideoElement>(null);
+  const imageInput = useRef<HTMLInputElement>(null);
   const stream = useRef<MediaStream | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const alive = useRef(false);
@@ -158,6 +159,53 @@ export function QrScanner({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [receipt, setReceipt] = useState<QrReceipt | null>(null);
+  async function scanImage(file?: File) {
+    if (!file) return;
+    setError("");
+    setBusy(true);
+    try {
+      const jsQR = (await import("jsqr")).default;
+      const source = URL.createObjectURL(file);
+      try {
+        const image = new Image();
+        await new Promise<void>((resolve, reject) => {
+          image.onload = () => resolve();
+          image.onerror = () =>
+            reject(new Error("Berkas ini bukan foto yang dapat dibaca."));
+          image.src = source;
+        });
+        const canvas = document.createElement("canvas");
+        const scale = Math.min(
+          1,
+          1800 / Math.max(image.naturalWidth, image.naturalHeight),
+        );
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        if (!context)
+          throw new Error("Foto QR tidak bisa dibaca di perangkat ini.");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+        const decoded = jsQR(pixels.data, pixels.width, pixels.height, {
+          inversionAttempts: "attemptBoth",
+        });
+        if (!decoded)
+          throw new Error(
+            "QR tidak ditemukan di foto. Pilih foto QR absensi yang lebih jelas.",
+          );
+        const result = await onScan(decoded.data);
+        if (alive.current) setReceipt(result);
+      } finally {
+        URL.revokeObjectURL(source);
+      }
+    } catch (e) {
+      if (alive.current)
+        setError(e instanceof Error ? e.message : "Foto QR gagal dipindai.");
+    } finally {
+      if (alive.current) setBusy(false);
+      if (imageInput.current) imageInput.current.value = "";
+    }
+  }
   function stop() {
     generation.current++;
     if (timer.current) clearTimeout(timer.current);
@@ -324,15 +372,30 @@ export function QrScanner({
         <button onClick={start} disabled={opening || busy || ready}>
           {opening ? "Membuka pemindai..." : "Buka pemindai QR"}
         </button>
+        <button
+          className="secondary"
+          type="button"
+          disabled={opening || busy || ready}
+          onClick={() => imageInput.current?.click()}
+        >
+          {busy ? "Memindai foto..." : "Pilih foto QR"}
+        </button>
         {ready && (
           <button className="secondary" onClick={stop}>
             Hentikan pemindai
           </button>
         )}
       </div>
+      <input
+        ref={imageInput}
+        hidden
+        type="file"
+        accept="image/*"
+        onChange={(event) => void scanImage(event.currentTarget.files?.[0])}
+      />
       <small>
-        Kamera hanya membaca QR. Foto dan lokasi tidak dikirim. Jam absensi
-        dicatat oleh server.
+        Kamera atau foto hanya digunakan untuk membaca QR. Foto dan lokasi
+        tidak dikirim; kode absensi diverifikasi oleh server.
       </small>
       {error && (
         <p className="notice error" role="alert">

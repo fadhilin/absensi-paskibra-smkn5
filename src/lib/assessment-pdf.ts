@@ -73,7 +73,15 @@ function pageImage(
   context.fillText(`Periode ${start} sampai ${end}`, 60, 119);
   context.fillText(`Disahkan ${certifiedAt}`, 60, 154);
 
-  const labels = ["No.", "NIS", "Nama", "Jurusan", "Kehadiran H/T/I/S/A", "Total poin", "Predikat"];
+  const labels = [
+    "No.",
+    "NIS",
+    "Nama",
+    "Jurusan",
+    "H/T/S/I/A",
+    "Total poin",
+    "Predikat",
+  ];
   const widths = [72, 180, 330, 270, 320, 200, 192];
   const left = 60;
   const top = 210;
@@ -109,7 +117,7 @@ function pageImage(
       row.nis,
       row.name,
       row.class_name,
-      `${row.hadir}/${row.terlambat}/${row.izin}/${row.sakit}/${row.alpa}`,
+      `${row.hadir}/${row.terlambat}/${row.sakit}/${row.izin}/${row.alpa}`,
       String(row.total),
       row.grade ?? "",
     ];

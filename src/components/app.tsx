@@ -689,7 +689,6 @@ export default function App() {
   const selected =
     periodSessions.find((t) => t.id === sessionId) ??
     periodSessions.find((t) => t.status !== "dibatalkan");
-  const completed = s.results.filter((r) => !r.reopened_at);
   const visibleMembers = s.members.filter((m) =>
     `${m.name} ${m.nis} ${m.class_name}`
       .toLowerCase()
@@ -1675,77 +1674,68 @@ export default function App() {
               <section className="award-intro">
                 <Icon name="Penghargaan" />
                 <span className="eyebrow">Apresiasi anggota</span>
-                <h2>Anggota terbaik bulanan</h2>
+                <h2>Penghargaan anggota</h2>
                 <p>
-                  Konsisten hadir, aktif berlatih, dan terus mengembangkan
-                  keterampilan.
+                  Catat pencapaian tiap anggota secara terpisah dari hasil
+                  ranking.
                 </p>
               </section>
-              {!completed.length ? (
-                <section className="panel">
-                  <Empty
-                    title="Penghargaan pertama menanti"
-                    description="Pelatih mengesahkan penerima setelah bulan berakhir dan seluruh data lengkap. Poin tertinggi yang sama mendapat penghargaan bersama."
-                  />
-                </section>
-              ) : (
-                completed.map((result) => (
-                  <section
-                    className="panel award-result"
-                    key={result.month + result.version}
-                  >
-                    <span className="eyebrow">{monthLabel(result.month)}</span>
-                    <h2>
-                      {result.winners.length
-                        ? result.rows
-                            .filter((r) => result.winners.includes(r.id))
-                            .map((r) => r.name)
-                            .join(" & ")
-                        : "Tidak ada penghargaan"}
-                    </h2>
-                    <p>
-                      {result.note ||
-                        "Anggota Terbaik Bulan " + monthLabel(result.month)}
-                    </p>
-                    <small>
-                      Disahkan{" "}
-                      {new Date(result.certified_at).toLocaleString("id-ID")} ·
-                      versi {result.version}
-                    </small>
-                  </section>
-                ))
-              )}
               {admin && (
                 <section className="panel">
-                  <div className="section-heading">
+                  <div className="section-heading wrap">
                     <div>
-                      <h2>Prestasi lomba</h2>
-                      <p>Dicatat terpisah dan tidak menambah ranking.</p>
+                      <h2>Pilih anggota</h2>
+                      <p>Pilih nama untuk mencatat penghargaan khusus.</p>
                     </div>
+                    <label className="field">
+                      <span>Cari anggota</span>
+                      <input
+                        type="search"
+                        placeholder="Nama, NIS, atau kelas"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                      />
+                    </label>
+                  </div>
+                  {visibleMembers.map((member) => (
                     <button
-                      className="secondary"
+                      type="button"
+                      className="history-row award-member-button"
+                      key={member.id}
                       onClick={() =>
                         open({
                           kind: "achievement",
-                          title: "Catat prestasi lomba",
+                          title: `Beri penghargaan untuk ${member.name}`,
+                          data: member,
                         })
                       }
                     >
-                      + Catat prestasi
+                      <strong>{member.name}</strong>
+                      <span>{member.nis} · {member.class_name}</span>
+                      <span aria-hidden="true">›</span>
                     </button>
-                  </div>
-                  {s.achievements.map((a) => (
-                    <div className="history-row" key={a.id}>
-                      <strong>{a.title}</strong>
-                      <p>
-                        {memberName(a.member_id)} · {dateLabel(a.date)}
-                      </p>
-                      <small>{a.note}</small>
-                    </div>
                   ))}
-                  {!s.achievements.length && <p>Belum ada prestasi dicatat.</p>}
+                  {!visibleMembers.length && <p>Anggota tidak ditemukan.</p>}
                 </section>
               )}
+              <section className="panel">
+                <div className="section-heading">
+                  <div>
+                    <h2>Riwayat penghargaan</h2>
+                    <p>Penghargaan khusus dicatat terpisah dari ranking.</p>
+                  </div>
+                </div>
+                {s.achievements.map((a) => (
+                  <div className="history-row" key={a.id}>
+                    <strong>{a.title}</strong>
+                    <p>
+                      {memberName(a.member_id)} · {dateLabel(a.date)}
+                    </p>
+                    {a.note && <small>{a.note}</small>}
+                  </div>
+                ))}
+                {!s.achievements.length && <p>Belum ada penghargaan dicatat.</p>}
+              </section>
             </>
           )}
           {page === "Pengaturan" && (
@@ -2241,7 +2231,12 @@ export default function App() {
             {modal?.kind === "achievement" && (
               <>
                 <Field label="Anggota">
-                  <select name="member_id" required>
+                  <select
+                    name="member_id"
+                    required
+                    defaultValue={(modal.data as Member | undefined)?.id ?? ""}
+                  >
+                    <option value="" disabled>Pilih anggota</option>
                     {s.members.map((m) => (
                       <option key={m.id} value={m.id}>
                         {m.name}
@@ -2249,8 +2244,13 @@ export default function App() {
                     ))}
                   </select>
                 </Field>
-                <Field label="Prestasi / kegiatan">
-                  <input name="title" required minLength={2} />
+                <Field label="Nama penghargaan">
+                  <input
+                    name="title"
+                    placeholder="Contoh: Berhasil mengibarkan bendera"
+                    required
+                    minLength={2}
+                  />
                 </Field>
                 <Field label="Tanggal">
                   <input name="date" type="date" required />
