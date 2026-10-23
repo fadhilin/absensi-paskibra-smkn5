@@ -9,7 +9,8 @@ import {
 } from "react";
 import { eligible, isCertified, ranking, schoolDate } from "@/lib/engine";
 import { DashboardData, Member, Ranking, Training } from "@/lib/types";
-import { parseCSV, toCSV } from "@/lib/csv";
+import { parseXlsx } from "@/lib/xlsx-import";
+import { toXlsx } from "@/lib/xlsx";
 import { QrScanner, TrainingQr, type QrReceipt } from "./qr-attendance";
 import { readableError } from "@/lib/errors";
 import { InstallPanel } from "./pwa";
@@ -237,9 +238,11 @@ function initials(name: string) {
     .map((x) => x[0])
     .join("");
 }
-function download(name: string, content: string) {
+function download(name: string, content: string | Blob) {
   const url = URL.createObjectURL(
-    new Blob([content], { type: "text/csv;charset=utf-8;" }),
+    typeof content === "string"
+      ? new Blob([content], { type: "text/plain;charset=utf-8;" })
+      : content,
   );
   const a = document.createElement("a");
   a.href = url;
@@ -522,9 +525,11 @@ export default function App() {
           active: v.active === "true",
         });
       } else if (modal.kind === "import") {
-        const file = new FormData(form).get("csv");
-        if (!(file instanceof File)) throw new Error("Pilih berkas CSV.");
-        ok = await createMembers(parseCSV(await file.text()));
+        const file = new FormData(form).get("xlsx");
+        if (!(file instanceof File)) throw new Error("Pilih berkas Excel.");
+        if (!file.name.toLowerCase().endsWith(".xlsx"))
+          throw new Error("Gunakan berkas Excel dengan format .xlsx.");
+        ok = await createMembers(parseXlsx(await file.arrayBuffer()));
       } else if (modal.kind === "session") {
         const offset =
           data?.state.timezone === "Asia/Makassar"
@@ -1103,10 +1108,6 @@ export default function App() {
                   >
                     Lihat ranking lengkap
                   </button>
-                  <small className="leader-note">
-                    Poin sama, posisi sama. Setiap anggota punya kesempatan
-                    untuk berkembang.
-                  </small>
                 </section>
               </div>
               {admin && (
@@ -1162,10 +1163,10 @@ export default function App() {
                   <button
                     className="secondary"
                     onClick={() =>
-                      open({ kind: "import", title: "Impor anggota dari CSV" })
+                      open({ kind: "import", title: "Impor anggota dari Excel" })
                     }
                   >
-                    Impor CSV
+                    Impor Excel
                   </button>
                   <button
                     onClick={() =>
@@ -1818,10 +1819,6 @@ export default function App() {
                 <div className="section-heading">
                   <div>
                     <h2>Aturan poin bulanan</h2>
-                    <p>
-                      Poin absensi tetap: hadir 10 dan terlambat 7. Aturan
-                      bulan yang sudah dipakai tetap mengikuti riwayatnya.
-                    </p>
                   </div>
                 </div>
                 <form
@@ -2064,16 +2061,16 @@ export default function App() {
               <>
                 <p>
                   Kolom wajib: nis, name, class_name, email, joined_on,
-                  password. Tanggal menggunakan YYYY-MM-DD. Maksimal 200 anggota
-                  per impor.
+                  password. Isi tanggal dengan format YYYY-MM-DD. Maksimal 200
+                  anggota per impor.
                 </p>
                 <button
                   type="button"
                   className="secondary"
                   onClick={() =>
                     download(
-                      "template-anggota.csv",
-                      toCSV([
+                      "template-anggota.xlsx",
+                      toXlsx([
                         [
                           "nis",
                           "name",
@@ -2086,13 +2083,13 @@ export default function App() {
                     )
                   }
                 >
-                  Unduh template CSV
+                  Unduh template Excel
                 </button>
-                <Field label="Berkas CSV">
+                <Field label="Berkas Excel (.xlsx)">
                   <input
-                    name="csv"
+                    name="xlsx"
                     type="file"
-                    accept=".csv,text/csv"
+                    accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     required
                   />
                 </Field>

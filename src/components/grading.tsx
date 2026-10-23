@@ -27,12 +27,7 @@ export function CriteriaEditor({
   );
   return (
     <details className="panel criteria-editor">
-      <summary>Ketentuan penilaian · skala 0–10</summary>
-      <p>
-        Setiap kriteria berbobot sama dengan nilai maksimum 10. Akumulasi nilai
-        masuk ke ranking bersama poin absensi. Kriteria baru membuat penilaian
-        sebelumnya belum lengkap sampai nilainya diisi.
-      </p>
+      <summary>Ketentuan penilaian | Skala 0–10</summary>
       {!rules ? (
         <p className="inline-note">
           Tetapkan poin absensi bulan {month} di Pengaturan terlebih dahulu.

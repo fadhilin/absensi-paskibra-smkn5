@@ -9,7 +9,7 @@ Antarmuka berbahasa Indonesia, mengutamakan penggunaan di HP, dan menyediakan te
 ## Fitur pelatih
 
 - **Beranda:** ringkasan latihan hari ini dengan total anggota aktif, hadir (termasuk terlambat), izin (termasuk sakit), serta belum absen atau alpa setelah sesi ditutup. Jika ada beberapa latihan, pilih sesi untuk melihat hitungannya; tombol detail membuka absensi sesi tersebut.
-- **Anggota:** tambah akun, impor CSV, cari berdasarkan nama/NIS/kelas, ubah data, aktifkan/nonaktifkan anggota, dan reset kata sandi. Foto anggota tampil dalam daftar, bersama dua diagram donat perkembangan periode terpilih (kehadiran dan nilai) serta total poin.
+- **Anggota:** tambah akun, impor Excel (.xlsx), cari berdasarkan nama/NIS/kelas, ubah data, aktifkan/nonaktifkan anggota, dan reset kata sandi. Foto anggota tampil dalam daftar, bersama dua diagram donat perkembangan periode terpilih (kehadiran dan nilai) serta total poin.
 - **Latihan dan absensi:** buat jadwal, tentukan lokasi serta waktu absensi, generate QR, unduh PNG atau bagikan QR, lihat rekap, dan kelola izin/sakit/koreksi dengan alasan.
 - **Penilaian:** atur kriteria, pilih anggota yang belum dinilai, lalu buka namanya untuk mengisi nilai **0–10**. Setelah disimpan, anggota kembali ke daftar yang belum dinilai.
 - **Kompetensi:** buat katalog keterampilan dan catat tingkat penguasaan, tanggal, serta catatan anggota.
@@ -187,7 +187,7 @@ npm run dev
 
 Buka `http://localhost:3000` atau port yang ditampilkan terminal. Restart server setelah mengubah `.env.local`.
 
-Login sebagai pelatih, buka **Profil → Pengaturan sekolah**, isi identitas dan zona waktu, lalu tentukan aturan poin/kriteria periode latihan. Tambahkan akun anggota melalui menu Anggota atau impor CSV.
+Login sebagai pelatih, buka **Profil → Pengaturan sekolah**, isi identitas dan zona waktu, lalu tentukan aturan poin/kriteria periode latihan. Tambahkan akun anggota melalui menu Anggota atau impor Excel.
 
 Untuk menjalankan build produksi lokal:
 
