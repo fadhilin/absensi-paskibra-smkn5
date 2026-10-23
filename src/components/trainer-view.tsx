@@ -125,6 +125,7 @@ export function TrainerProfile({
     { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
     { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
     { page: "Laporan", label: "Laporan Penilaian", icon: "Laporan" },
+    { page: "Pengaturan", label: "Pengaturan sekolah", icon: "Pengaturan" },
   ];
   return (
     <section className="panel trainer-profile">

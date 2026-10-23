@@ -257,6 +257,7 @@ export default function App() {
       schoolDate(new Date(), "Asia/Jakarta").slice(0, 7),
     );
   const [data, setData] = useState<DashboardData | null>(null);
+  const [readAnnouncementKeys, setReadAnnouncementKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
@@ -312,6 +313,43 @@ export default function App() {
     }, 10000);
     return () => clearInterval(interval);
   }, [data?.viewer.role, page, refresh]);
+  useEffect(() => {
+    if (!data || data.viewer.role === "admin") {
+      setReadAnnouncementKeys([]);
+      return;
+    }
+    const storageKey = `paskibra-read-announcements:${data.viewer.id}`;
+    let saved: string[] = [];
+    try {
+      const parsed: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
+      if (Array.isArray(parsed))
+        saved = parsed.filter((item): item is string => typeof item === "string");
+    } catch {
+      saved = [];
+    }
+    const published = (data.state.announcements ?? []).filter(
+      (announcement) => announcement.status === "published",
+    );
+    const next = page === "Pengumuman"
+      ? [...new Set([
+          ...saved,
+          ...published.map((announcement) => `${announcement.id}:${announcement.updated_at}`),
+        ])]
+      : saved;
+    setReadAnnouncementKeys(next);
+    if (page === "Pengumuman") {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {}
+    }
+  }, [data?.viewer.id, data?.viewer.role, data?.state.announcements, page]);
+  useEffect(() => {
+    if (data?.viewer.role !== "member") return;
+    const interval = setInterval(() => {
+      if (!document.hidden) refresh();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [data?.viewer.role, refresh]);
   useEffect(() => {
     const saved = localStorage.getItem("paskibra-theme");
     setDark(saved === "dark");
@@ -551,6 +589,16 @@ export default function App() {
     await refresh();
     return result;
   }
+  const unreadAnnouncementCount =
+    data?.viewer.role === "member"
+      ? (data.state.announcements ?? []).filter(
+          (announcement) =>
+            announcement.status === "published" &&
+            !readAnnouncementKeys.includes(
+              `${announcement.id}:${announcement.updated_at}`,
+            ),
+        ).length
+      : 0;
   if (loading)
     return (
       <main className="loading" role="status">
@@ -834,10 +882,19 @@ export default function App() {
             {
               <button
                 className="member-profile-button"
-                aria-label="Buka pengumuman"
+                aria-label={
+                  unreadAnnouncementCount
+                    ? `Buka pengumuman, ${unreadAnnouncementCount} belum dibaca`
+                    : "Buka pengumuman"
+                }
                 onClick={() => navigate("Pengumuman")}
               >
                 <MemberIcon name="Notifikasi" />
+                {unreadAnnouncementCount > 0 && (
+                  <span className="notification-badge" aria-hidden="true">
+                    {unreadAnnouncementCount > 99 ? "99+" : unreadAnnouncementCount}
+                  </span>
+                )}
               </button>
             }
           </div>

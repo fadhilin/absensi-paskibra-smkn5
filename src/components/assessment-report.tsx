@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { assessmentRanking, schoolDate } from "@/lib/engine";
-import { toCSV } from "@/lib/csv";
+import { toXlsx } from "@/lib/xlsx";
+import { createAssessmentPdf } from "@/lib/assessment-pdf";
 import type { AssessmentReport, DashboardData } from "@/lib/types";
 
 type Preset = "7 hari" | "14 hari" | "30 hari" | "1 bulan" | "3 bulan" | "6 bulan" | "Atur tanggal";
@@ -56,6 +57,22 @@ function reportForRange(reports: AssessmentReport[], start: string, end: string)
   return reports
     .filter((report) => report.start === start && report.end === end)
     .at(-1);
+}
+
+function downloadFile(content: Blob, filename: string) {
+  const url = URL.createObjectURL(content);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function isIos() {
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
 }
 
 function AssessmentPeriodPicker({
@@ -177,7 +194,7 @@ export function AssessmentReportView({
     report && rows.length && rows.every((row) => row.grade !== null),
   );
   const complete = preview.every((row) => row.incomplete === 0);
-  const ended = end < today;
+  const dateReached = end <= today;
 
   async function certify() {
     setBusy(true);
@@ -196,9 +213,9 @@ export function AssessmentReportView({
     setBusy(false);
   }
 
-  function downloadReport() {
-    if (!report || !allGraded) return;
-    const csv = toCSV([
+  function exportRows() {
+    if (!report || !allGraded) return [];
+    return [
       ["Laporan Penilaian"],
       ["Periode", `${dateLabel(start)} - ${dateLabel(end)}`],
       ["Disahkan", new Date(report.certified_at).toLocaleString("id-ID")],
@@ -212,13 +229,42 @@ export function AssessmentReportView({
         row.total,
         row.grade,
       ]),
-    ]);
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `laporan-penilaian-${start}-${end}.csv`;
-    anchor.click();
-    URL.revokeObjectURL(url);
+    ];
+  }
+
+  function downloadExcel() {
+    if (!report || !allGraded) return;
+    downloadFile(
+      toXlsx(exportRows()),
+      `laporan-penilaian-${start}-${end}.xlsx`,
+    );
+  }
+
+  function downloadPdf() {
+    if (!report || !allGraded) return;
+    const fileName = `laporan-penilaian-${start}-${end}.pdf`;
+    const pdf = createAssessmentPdf(
+      rows,
+      dateLabel(start),
+      dateLabel(end),
+      new Date(report.certified_at).toLocaleString("id-ID"),
+    );
+    const file = new File([pdf], fileName, { type: "application/pdf" });
+    if (
+      isIos() &&
+      navigator.share &&
+      navigator.canShare?.({ files: [file] })
+    ) {
+      void navigator.share({ files: [file], title: "Laporan Penilaian" }).catch(() => {});
+      return;
+    }
+    if (isIos()) {
+      const url = URL.createObjectURL(pdf);
+      window.open(url, "_blank");
+      window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+      return;
+    }
+    downloadFile(pdf, fileName);
   }
 
   return (
@@ -241,11 +287,11 @@ export function AssessmentReportView({
             {report ? (
               <>
                 <span className="status good">Ranking disahkan</span>
-                <button disabled={!allGraded} onClick={downloadReport}>Unduh laporan CSV</button>
-                <button className="secondary" disabled={!allGraded} onClick={() => window.print()}>Ekspor PDF</button>
+                <button disabled={!allGraded} onClick={downloadExcel}>Unduh Excel</button>
+                <button className="secondary" disabled={!allGraded} onClick={downloadPdf}>Ekspor PDF</button>
               </>
             ) : (
-              <button disabled={busy || !ended || !rows.length || !complete} onClick={certify}>
+              <button disabled={busy || !dateReached || !rows.length || !complete} onClick={certify}>
                 {busy ? "Menyimpan..." : "Sahkan ranking periode ini"}
               </button>
             )}
@@ -253,8 +299,8 @@ export function AssessmentReportView({
         </div>
         {!report && (
           <p className="inline-note">
-            {!ended
-              ? "Pengesahan tersedia setelah tanggal akhir periode lewat."
+            {!dateReached
+              ? "Pengesahan tersedia mulai tanggal akhir periode."
               : !rows.length
                 ? "Belum ada latihan pada periode ini."
                 : !complete
@@ -335,7 +381,7 @@ export function AssessmentRankingView({
   );
   const report = reportForRange(data.state.assessment_reports ?? [], start, end);
   const rows = report?.rows ?? preview;
-  const ended = end < today;
+  const dateReached = end <= today;
   const complete = preview.length > 0 && preview.every((row) => row.incomplete === 0);
 
   async function certify() {
@@ -366,7 +412,7 @@ export function AssessmentRankingView({
                 <button onClick={() => openReport(start, end)}>Isi predikat & buka laporan</button>
               </>
             ) : (
-              <button disabled={busy || !ended || !complete} onClick={certify}>
+              <button disabled={busy || !dateReached || !complete} onClick={certify}>
                 {busy ? "Menyimpan..." : "Sahkan ranking periode ini"}
               </button>
             )}
@@ -374,8 +420,8 @@ export function AssessmentRankingView({
         </div>
         {!report && (
           <p className="inline-note">
-            {!ended
-              ? "Pengesahan dapat dilakukan setelah tanggal akhir periode lewat."
+            {!dateReached
+              ? "Pengesahan dapat dilakukan mulai tanggal akhir periode."
               : !preview.length
                 ? "Belum ada latihan pada periode ini."
                 : !complete

@@ -48,10 +48,31 @@
   display: none;
 }
 .member-profile-button {
+  position: relative;
+  display: grid;
+  place-items: center;
   background: transparent;
   color: #fff;
   min-width: 44px;
+  min-height: 44px;
   padding: 10px;
+}
+.notification-badge {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+  border: 2px solid #2454ac;
+  border-radius: 999px;
+  background: #c62828;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1;
 }
 .member-back-button {
   background: transparent;

@@ -440,8 +440,8 @@ export function applyAction(
       })
       .refine((v) => v.start >= "2026-01-01" && v.start <= v.end, "Pilih rentang tanggal mulai 1 Januari 2026.")
       .parse(d);
-    if (value.end >= schoolDate(now, s.timezone))
-      throw new Error("Sahkan laporan setelah rentang tanggal berakhir.");
+    if (value.end > schoolDate(now, s.timezone))
+      throw new Error("Pengesahan tersedia mulai tanggal akhir periode.");
     const rows = assessmentRanking(s, value.start, value.end);
     if (!rows.length) throw new Error("Belum ada latihan pada rentang ini.");
     if (rows.some((row) => row.incomplete > 0))
