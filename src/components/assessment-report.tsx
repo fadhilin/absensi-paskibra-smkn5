@@ -284,7 +284,7 @@ export function AssessmentReportView({
           <div className="actions">
             {report ? (
               <>
-                <span className="status good">Ranking disahkan</span>
+                <span className="status good">Peringkat disahkan</span>
                 <button disabled={!allGraded} onClick={downloadExcel}>Unduh Excel</button>
                 <button className="secondary" disabled={!allGraded} onClick={downloadPdf}>Ekspor PDF</button>
               </>
@@ -309,7 +309,7 @@ export function AssessmentReportView({
         {report && (
           <p className="inline-note">
             {allGraded
-              ? `Ranking disahkan ${new Date(report.certified_at).toLocaleString("id-ID")}. Laporan siap diunduh.`
+              ? `Peringkat disahkan ${new Date(report.certified_at).toLocaleString("id-ID")}. Laporan siap diunduh.`
               : "Isi predikat setiap anggota untuk membuka unduhan laporan."}
           </p>
         )}
@@ -402,13 +402,13 @@ export function AssessmentRankingView({
       <section className="panel assessment-report-panel">
         <div className="section-heading wrap">
           <div>
-            <h2>Ranking periode</h2>
+            <h2>Peringkat periode</h2>
             <p>{rows.length} anggota · {dateLabel(start)} - {dateLabel(end)}</p>
           </div>
           <div className="actions">
             {report ? (
               <>
-                <span className="status good">Ranking disahkan</span>
+                <span className="status good">Peringkat disahkan</span>
                 <button onClick={() => openReport(start, end)}>Isi predikat & buka laporan</button>
               </>
             ) : (

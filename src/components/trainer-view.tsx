@@ -25,12 +25,12 @@ export const trainerNavigation: {
 }[] = [
   { page: "Dashboard", label: "Beranda", icon: "Dashboard" },
   { page: "Anggota", label: "Anggota", icon: "Anggota" },
-  { page: "Latihan & absensi", label: "Absensi", icon: "Absensi saya" },
+  { page: "Latihan & absensi", label: "Kehadiran", icon: "Absensi saya" },
   { page: "Penilaian", label: "Nilai", icon: "Perkembangan saya" },
   { page: "Profil pelatih", label: "Profil", icon: "Profil saya" },
 ];
 const quickLinks: { page: TrainerPage; label: string; icon: string }[] = [
-  { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
+  { page: "Ranking bulanan", label: "Peringkat", icon: "Ranking bulanan" },
   { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
   { page: "Kompetensi", label: "Kompetensi", icon: "Kompetensi" },
   { page: "Laporan", label: "Laporan Penilaian", icon: "Laporan" },
@@ -80,7 +80,7 @@ export function TrainerOverview({
             <div>
               <strong>Perlu dilengkapi</strong>
               <small>
-                Absensi atau nilai dari {sessions.length} sesi bulan ini
+                Kehadiran atau nilai dari {sessions.length} sesi bulan ini
               </small>
             </div>
           </div>
@@ -124,7 +124,7 @@ export function TrainerProfile({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const links: { page: TrainerPage; label: string; icon: string }[] = [
-    { page: "Ranking bulanan", label: "Ranking", icon: "Ranking bulanan" },
+    { page: "Ranking bulanan", label: "Peringkat", icon: "Ranking bulanan" },
     { page: "Penghargaan", label: "Penghargaan", icon: "Penghargaan" },
     { page: "Laporan", label: "Laporan Penilaian", icon: "Laporan" },
     { page: "Pengaturan", label: "Pengaturan sekolah", icon: "Pengaturan" },

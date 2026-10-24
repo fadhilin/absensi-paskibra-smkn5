@@ -265,8 +265,8 @@ function MonthlyRuleSettings({
         <button disabled={busy}>Simpan aturan poin</button>
       </form>
       <p className="settings-history-note">
-        Riwayat di bawah menampilkan aturan yang tersimpan untuk tiap periode.
-        Aturan yang sudah dipakai atau periode lampau tidak dapat diubah.
+        Aturan awal setiap bulan: hadir 10 poin dan terlambat 7 poin. Nilainya
+        dapat diubah sebelum dipakai pada periode tersebut.
       </p>
     </>
   );
@@ -456,7 +456,7 @@ export default function App() {
   }, [modal]);
   useEffect(() => {
     if (!notice) return;
-    const timeout = setTimeout(() => setNotice(""), 4000);
+    const timeout = setTimeout(() => setNotice(""), 2500);
     return () => clearTimeout(timeout);
   }, [notice]);
   const open = (m: Modal) => {
@@ -898,7 +898,7 @@ export default function App() {
                   p === "Penilaian"
                     ? "Perkembangan saya"
                     : p === "Latihan & absensi"
-                      ? "Absensi saya"
+                      ? "Kehadiran saya"
                       : p === "Profil pelatih"
                         ? "Profil saya"
                         : p
@@ -1011,8 +1011,10 @@ export default function App() {
                   ? `Selamat datang, ${admin ? "Pelatih" : data.viewer.name.split(" ")[0]}`
                   : page === "Laporan"
                     ? "Laporan Penilaian"
-                    : !admin && page === "Ranking bulanan"
-                      ? "Ranking"
+                    : page === "Ranking bulanan"
+                      ? "Peringkat"
+                      : admin && page === "Latihan & absensi"
+                        ? "Latihan & Kehadiran"
                       : page}
               </h1>
               <p>
@@ -1383,7 +1385,7 @@ export default function App() {
                         <dd>{t.location}</dd>
                       </div>
                       <div>
-                        <dt>Absensi</dt>
+                        <dt>Kehadiran</dt>
                         <dd>
                           {timeLabel(t.opens_at, s.timezone)} –{" "}
                           {timeLabel(t.closes_at, s.timezone)}
@@ -1459,7 +1461,7 @@ export default function App() {
                 <section className="panel">
                   <div className="section-heading wrap">
                     <div>
-                      <h2>Absensi: {selected.title}</h2>
+                      <h2>Kehadiran: {selected.title}</h2>
                       <p>
                         {dateLabel(selected.date)} · {selectedAtt.length}{" "}
                         catatan
@@ -1723,7 +1725,7 @@ export default function App() {
                   <p>
                     {certified
                       ? "Hasil resmi tersedia dalam riwayat penghargaan."
-                      : "Ranking sementara akan diperbarui saat absensi dan penilaian masuk."}
+                      : "Peringkat sementara akan diperbarui saat kehadiran dan penilaian masuk."}
                   </p>
                 </div>
                 <Status>{certified ? "Disahkan" : "Sementara"}</Status>
@@ -1731,7 +1733,7 @@ export default function App() {
               <section className="panel">
                 <div className="section-heading wrap">
                   <div>
-                    <h2>Ranking anggota</h2>
+                    <h2>Peringkat anggota</h2>
                     <p>
                       {rows.length} anggota · {activeSessions.length} latihan
                       sah
@@ -2044,7 +2046,7 @@ export default function App() {
             onScan={(token) => scanQr(token, modal.data as Training)}
             onDone={() => {
               setModal(null);
-              setNotice("Absensi berhasil tercatat.");
+              setNotice("Kehadiran berhasil tercatat.");
               refresh();
             }}
           />

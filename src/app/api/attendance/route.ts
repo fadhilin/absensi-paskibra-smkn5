@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     await sameOrigin();
     const viewer = await authenticate();
     if (viewer.role !== "member")
-      throw new Error("Absensi QR hanya untuk anggota.");
+      throw new Error("Kehadiran QR hanya untuk anggota.");
     if (Number(request.headers.get("content-length") ?? 0) > 4096)
       throw new Error("Permintaan QR terlalu besar.");
     const { token, session_id } = z

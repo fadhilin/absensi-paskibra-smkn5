@@ -29,7 +29,15 @@ export function ProfileAvatar({ data }: { data: DashboardData }) {
     : "";
   return <Avatar name={data.viewer.name} src={src} />;
 }
-export function Avatar({ name, src, className = "member-avatar" }: { name: string; src: string; className?: string }) {
+export function Avatar({
+  name,
+  src,
+  className = "member-avatar",
+}: {
+  name: string;
+  src: string;
+  className?: string;
+}) {
   const [failed, setFailed] = useState("");
   return src && failed !== src ? (
     <img
@@ -130,10 +138,7 @@ export function ProfilePhotoEditor({
         </svg>
         <span>Ubah foto profil</span>
       </summary>
-      <p>
-        JPG, PNG, atau WebP, maksimal 2 MB. Bagian tengah foto dipotong menjadi
-        persegi.
-      </p>
+      <p>JPG, PNG, atau WebP, maksimal 2 MB.</p>
       <label className="field">
         <span>Pilih foto profil</span>
         <input

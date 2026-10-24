@@ -37,7 +37,7 @@ export function recordQrAttendance(
   receivedAt = new Date(),
 ): State {
   if (viewer.role !== "member")
-    throw new Error("Absensi QR hanya untuk anggota.");
+    throw new Error("Kehadiran QR hanya untuk anggota.");
   const claims = qrClaimsSchema.parse(input);
   const state = structuredClone(original);
   const session = state.sessions.find((s) => s.id === claims.session);
@@ -75,7 +75,7 @@ export function recordQrAttendance(
     )
   )
     throw new Error(
-      "Absensi sudah tercatat. Hubungi pelatih jika perlu koreksi.",
+      "Kehadiran sudah tercatat. Hubungi pelatih jika perlu koreksi.",
     );
   const record: Attendance = {
     id: previous?.id ?? crypto.randomUUID(),

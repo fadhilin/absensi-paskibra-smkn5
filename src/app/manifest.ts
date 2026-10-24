@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Paskibra | Absensi & Poin",
+    name: "Paskibra | Kehadiran & Poin",
     short_name: "Paskibra",
-    description: "Absensi latihan dan perkembangan anggota Paskibra.",
+    description: "Kehadiran latihan dan perkembangan anggota Paskibra.",
     lang: "id",
     start_url: "/",
     scope: "/",

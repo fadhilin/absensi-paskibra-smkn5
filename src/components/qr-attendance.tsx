@@ -62,8 +62,8 @@ export function TrainingQr({
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: `Absensi ${session.title}`,
-          text: `Scan melalui menu Absensi aplikasi Paskibra untuk ${session.title}, ${session.date}.`,
+          title: `Kehadiran ${session.title}`,
+          text: `Scan melalui menu Kehadiran aplikasi Paskibra untuk ${session.title}, ${session.date}.`,
         });
         setMessage("QR dibagikan melalui perangkat Anda.");
       } else {
@@ -108,7 +108,7 @@ export function TrainingQr({
         </>
       )}
       <small>
-        Absensi dibuka{" "}
+        Kehadiran dibuka{" "}
         {new Date(session.opens_at).toLocaleString("id-ID", {
           timeZone: timezone,
         })}{" "}
@@ -293,7 +293,7 @@ export function QrScanner({
                     setError(
                       e instanceof Error
                         ? e.message
-                        : "Absensi gagal disimpan. Coba scan ulang.",
+                        : "Kehadiran gagal disimpan. Coba scan ulang.",
                     );
                 })
                 .finally(() => {
@@ -329,7 +329,7 @@ export function QrScanner({
   if (receipt)
     return (
       <div className="qr-receipt" role="status">
-        <h3>Absensi berhasil tercatat</h3>
+        <h3>Kehadiran berhasil tercatat</h3>
         <dl>
           <div>
             <dt>Nama</dt>
@@ -359,7 +359,7 @@ export function QrScanner({
     <div className="qr-scanner">
       <h3>{session.title}</h3>
       <p>
-        Arahkan kamera ke QR yang diberikan pelatih. Absensi tercatat otomatis
+        Arahkan kamera ke QR yang diberikan pelatih. Kehadiran tercatat otomatis
         setelah QR valid terbaca.
       </p>
       <div className="qr-video">

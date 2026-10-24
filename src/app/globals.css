@@ -93,11 +93,26 @@ textarea::placeholder {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--red);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--red-soft);
+  outline: none;
+}
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
 }
 :focus-visible {
   outline: 3px solid var(--red);
   outline-offset: 3px;
+}
+input:focus-visible:not([type="checkbox"]):not([type="radio"]),
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--red-soft);
 }
 h1,
 h2,

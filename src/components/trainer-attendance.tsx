@@ -29,7 +29,7 @@ export function TrainerAttendance({ state, onMembers, onSession }: {
           {session ? (
             <>
               <strong>{session.title}</strong>
-              <small>{time(session.opens_at)} – {time(session.closes_at)} · {summary.closed ? "Ditutup" : summary.started ? "Absensi dibuka" : "Belum dibuka"}</small>
+              <small>{time(session.opens_at)} – {time(session.closes_at)} · {summary.closed ? "Ditutup" : summary.started ? "Kehadiran dibuka" : "Belum dibuka"}</small>
             </>
           ) : <strong>Belum ada latihan hari ini.</strong>}
         </div>

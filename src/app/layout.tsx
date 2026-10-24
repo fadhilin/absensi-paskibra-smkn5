@@ -4,7 +4,7 @@ import "./globals.css";
 import "./mobile.css";
 export const metadata: Metadata = {
   title: "Paskibra SMKN 5 Jakarta",
-  description: "Absensi latihan, penilaian, dan penghargaan anggota Paskibra.",
+  description: "Kehadiran latihan, penilaian, dan penghargaan anggota Paskibra.",
   appleWebApp: { capable: true, title: "Paskibra", statusBarStyle: "default" },
   icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
 };

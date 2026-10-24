@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     });
     if (error)
       throw new Error(
-        "Ranking gagal dihitung. Pastikan seluruh migrasi sampai 004 sudah dijalankan.",
+        "Peringkat gagal dihitung. Pastikan seluruh migrasi sampai 004 sudah dijalankan.",
       );
     if ((ranks as Ranking[]).some((row) => row.evaluation === undefined))
       throw new Error(

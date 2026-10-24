@@ -20,7 +20,7 @@ export type MemberPage =
   | "Pengumuman";
 export const memberNavigation: { page: MemberPage; label: string }[] = [
   { page: "Dashboard", label: "Beranda" },
-  { page: "Absensi saya", label: "Absensi" },
+  { page: "Absensi saya", label: "Kehadiran" },
   { page: "Perkembangan saya", label: "Nilai" },
   { page: "Jadwal latihan", label: "Jadwal" },
   { page: "Profil saya", label: "Profil" },
@@ -295,7 +295,7 @@ export function MemberOverview({
           ).map((p) => (
             <button key={p} onClick={() => navigate(p)}>
               <MemberIcon name={p} />
-              <span>{p === "Ranking bulanan" ? "Ranking" : p}</span>
+              <span>{p === "Ranking bulanan" ? "Peringkat" : p}</span>
             </button>
           ))}
         </div>
@@ -345,7 +345,7 @@ export function MemberAttendance({
   return (
     <section className="panel member-attendance">
       <div className="section-heading">
-        <h2>Absensi saya</h2>
+        <h2>Kehadiran saya</h2>
         <MemberIcon name="Absensi saya" />
       </div>
       <div className="member-tabs" role="group" aria-label="Tampilan absensi">
@@ -673,7 +673,7 @@ export function MemberProfile({
           ).map((p) => (
             <button key={p} onClick={() => navigate(p)}>
               <MemberIcon name={p} />
-              <span>{p === "Ranking bulanan" ? "Ranking" : p}</span>
+              <span>{p === "Ranking bulanan" ? "Peringkat" : p}</span>
               <span aria-hidden="true">›</span>
             </button>
           ))}
@@ -690,7 +690,7 @@ export function MemberProfile({
       <section className="member-about">
         <h2>Tentang aplikasi</h2>
         <p>
-          Absensi Anggota Paskibra {data.state.school}.
+          Kehadiran anggota Paskibra {data.state.school}.
         </p>
         <small>Versi 0.1.0</small>
       </section>

@@ -29,7 +29,7 @@ export function validateAttendance(input: {
   if (input.opensAt > input.onTimeUntil || input.onTimeUntil > input.closesAt)
     throw new Error("Urutan waktu sesi tidak valid.");
   if (input.receivedAt < input.opensAt || input.receivedAt > input.closesAt)
-    throw new Error("Absensi berada di luar waktu sesi.");
+    throw new Error("Kehadiran berada di luar waktu sesi.");
   return input.receivedAt <= input.onTimeUntil ? "hadir" : "terlambat";
 }
 
