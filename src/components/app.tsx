@@ -357,6 +357,7 @@ export default function App() {
     [dark, setDark] = useState(false),
     [search, setSearch] = useState(""),
     [sessionId, setSessionId] = useState(""),
+    [attendanceDetail, setAttendanceDetail] = useState(false),
     [modal, setModal] = useState<Modal | null>(null),
     [modalError, setModalError] = useState("");
   const [assessmentRange, setAssessmentRange] = useState<{
@@ -465,6 +466,7 @@ export default function App() {
   };
   function navigate(p: Page) {
     setPage(p);
+    if (p !== "Latihan & absensi") setAttendanceDetail(false);
     setSearch("");
     setNotice("");
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -890,7 +892,10 @@ export default function App() {
             <button
               key={p}
               className={page === p ? "active" : ""}
-              onClick={() => navigate(p)}
+              onClick={() => {
+                if (p === "Latihan & absensi") setAttendanceDetail(false);
+                navigate(p);
+              }}
               aria-current={page === p ? "page" : undefined}
             >
               <MemberIcon
@@ -1009,6 +1014,8 @@ export default function App() {
               <h1>
                 {page === "Dashboard"
                   ? `Selamat datang, ${admin ? "Pelatih" : data.viewer.name.split(" ")[0]}`
+                  : admin && page === "Latihan & absensi" && attendanceDetail
+                    ? "Detail kehadiran"
                   : page === "Laporan"
                     ? "Laporan Penilaian"
                     : page === "Ranking bulanan"
@@ -1018,13 +1025,15 @@ export default function App() {
                       : page}
               </h1>
               <p>
-                {page === "Dashboard" && !admin
+                {admin && page === "Latihan & absensi" && attendanceDetail
+                  ? `${selected?.title ?? "Latihan"}${selected ? ` · ${dateLabel(selected.date)}` : ""}`
+                  : page === "Dashboard" && !admin
                   ? "Kehadiran dan perkembangan latihan Anda."
                   : descriptions[page]}
               </p>
             </div>
             <div className="heading-actions">
-              {page !== "Laporan" && (
+              {page !== "Laporan" && !(page === "Latihan & absensi" && attendanceDetail) && (
                 <label className="month-select">
                   <span className="sr-only">Periode</span>
                   <input
@@ -1100,6 +1109,7 @@ export default function App() {
                 onSession={(id, date) => {
                   setMonth(date.slice(0, 7));
                   setSessionId(id);
+                  setAttendanceDetail(true);
                   navigate("Latihan & absensi");
                 }}
               />
@@ -1355,7 +1365,7 @@ export default function App() {
               />
             </section>
           )}
-          {page === "Latihan & absensi" && (
+          {page === "Latihan & absensi" && !attendanceDetail && (
             <>
               <div className="section-heading">
                 <h2>Jadwal & kehadiran</h2>
@@ -1415,9 +1425,13 @@ export default function App() {
                       )}
                       <button
                         className="secondary"
-                        onClick={() => setSessionId(t.id)}
+                        onClick={() => {
+                          setSessionId(t.id);
+                          setAttendanceDetail(true);
+                          window.scrollTo({ top: 0, behavior: "instant" });
+                        }}
                       >
-                        Lihat absensi
+                        Lihat detail kehadiran
                       </button>
                       {t.status === "draf" && (
                         <button
@@ -1457,7 +1471,16 @@ export default function App() {
                   description="Tetapkan aturan poin, lalu buat jadwal latihan pertama."
                 />
               )}
-              {selected && (
+            </>
+          )}
+          {page === "Latihan & absensi" && attendanceDetail && (
+            <>
+              <div className="section-heading attendance-detail-heading">
+                <button className="secondary" onClick={() => setAttendanceDetail(false)}>
+                  ‹ Kembali ke jadwal
+                </button>
+              </div>
+              {selected ? (
                 <section className="panel">
                   <div className="section-heading wrap">
                     <div>
@@ -1558,6 +1581,8 @@ export default function App() {
                     </table>
                   </div>
                 </section>
+              ) : (
+                <Empty title="Latihan tidak ditemukan" description="Pilih latihan dari daftar jadwal untuk melihat detail kehadirannya." />
               )}
             </>
           )}
