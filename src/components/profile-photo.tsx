@@ -123,7 +123,13 @@ export function ProfilePhotoEditor({
   }
   return (
     <details className="profile-photo-editor">
-      <summary>Ubah foto profil</summary>
+      <summary>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h3l1.5-2h7L17 7h3v12H4z" />
+          <circle cx="12" cy="13" r="3.5" />
+        </svg>
+        <span>Ubah foto profil</span>
+      </summary>
       <p>
         JPG, PNG, atau WebP, maksimal 2 MB. Bagian tengah foto dipotong menjadi
         persegi.

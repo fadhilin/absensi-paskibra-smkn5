@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { eligible, isCertified, ranking, schoolDate } from "@/lib/engine";
-import { DashboardData, Member, Ranking, Training } from "@/lib/types";
+import { DashboardData, Member, Ranking, Rules, Training } from "@/lib/types";
 import { parseXlsx } from "@/lib/xlsx-import";
 import { toXlsx } from "@/lib/xlsx";
 import { QrScanner, TrainingQr, type QrReceipt } from "./qr-attendance";
@@ -182,6 +182,93 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
       <span>{label}</span>
       {children}
     </label>
+  );
+}
+function MonthlyRuleSettings({
+  month,
+  rules,
+  busy,
+  mutate,
+}: {
+  month: string;
+  rules: Rules[];
+  busy: boolean;
+  mutate(action: string, input: unknown): Promise<boolean>;
+}) {
+  const [selectedMonth, setSelectedMonth] = useState(() =>
+    firstUnconfiguredMonth(month, rules.map((rule) => rule.month)),
+  );
+  const [present, setPresent] = useState(() =>
+    String(rules.find((rule) => rule.month === selectedMonth)?.present ?? 10),
+  );
+  const [late, setLate] = useState(() =>
+    String(rules.find((rule) => rule.month === selectedMonth)?.late ?? 7),
+  );
+  function selectMonth(value: string) {
+    setSelectedMonth(value);
+    const existing = rules.find((rule) => rule.month === value);
+    setPresent(String(existing?.present ?? 10));
+    setLate(String(existing?.late ?? 7));
+  }
+  const existing = rules.find((rule) => rule.month === selectedMonth);
+  return (
+    <>
+      <form
+        key={month}
+        className="settings-form"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const v = formValues(e.currentTarget);
+          await mutate("rules", {
+            month: v.month,
+            present: Number(v.present),
+            late: Number(v.late),
+            activity: 0,
+            skill: 0,
+            criteria: existing?.criteria ?? referenceCriteria,
+          });
+        }}
+      >
+        <Field label="Berlaku untuk bulan">
+          <input
+            name="month"
+            type="month"
+            required
+            value={selectedMonth}
+            onChange={(event) => selectMonth(event.target.value)}
+          />
+        </Field>
+        <div className="attendance-point-fixed" aria-label="Poin absensi">
+          <Field label="Hadir (poin)">
+            <input
+              name="present"
+              type="number"
+              min="0"
+              step="1"
+              required
+              value={present}
+              onChange={(event) => setPresent(event.target.value)}
+            />
+          </Field>
+          <Field label="Terlambat (poin)">
+            <input
+              name="late"
+              type="number"
+              min="0"
+              step="1"
+              required
+              value={late}
+              onChange={(event) => setLate(event.target.value)}
+            />
+          </Field>
+        </div>
+        <button disabled={busy}>Simpan aturan poin</button>
+      </form>
+      <p className="settings-history-note">
+        Riwayat di bawah menampilkan aturan yang tersimpan untuk tiap periode.
+        Aturan yang sudah dipakai atau periode lampau tidak dapat diubah.
+      </p>
+    </>
   );
 }
 function Status({ children }: { children: ReactNode }) {
@@ -958,7 +1045,7 @@ export default function App() {
             </div>
           </div>
           {error && (
-            <div className="notice error" role="alert">
+            <div className="notice error app-toast" role="alert">
               {error}
               <button
                 onClick={() => setError("")}
@@ -969,7 +1056,7 @@ export default function App() {
             </div>
           )}
           {notice && (
-            <div className="notice success-toast" role="status">
+            <div className="notice success-toast app-toast" role="status">
               {notice}
               <button
                 onClick={() => setNotice("")}
@@ -1821,38 +1908,13 @@ export default function App() {
                     <h2>Aturan poin bulanan</h2>
                   </div>
                 </div>
-                <form
+                <MonthlyRuleSettings
                   key={month}
-                  className="settings-form"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const v = formValues(e.currentTarget);
-                    await mutate("rules", {
-                      month: v.month,
-                      present: 10,
-                      late: 7,
-                      activity: 0,
-                      skill: 0,
-                      criteria:
-                        s.rules.find((r) => r.month === v.month)?.criteria ??
-                        referenceCriteria,
-                    });
-                  }}
-                >
-                  <Field label="Berlaku untuk bulan">
-                    <input
-                      name="month"
-                      type="month"
-                      required
-                      defaultValue={firstUnconfiguredMonth(month, s.rules.map((rule) => rule.month))}
-                    />
-                  </Field>
-                  <div className="attendance-point-fixed" aria-label="Poin absensi tetap">
-                    <div><span>Hadir</span><strong>10 poin</strong></div>
-                    <div><span>Terlambat</span><strong>7 poin</strong></div>
-                  </div>
-                  <button disabled={busy}>Simpan aturan poin</button>
-                </form>
+                  month={month}
+                  rules={s.rules}
+                  busy={busy}
+                  mutate={mutate}
+                />
                 <div className="table-wrap">
                   <table>
                     <thead>

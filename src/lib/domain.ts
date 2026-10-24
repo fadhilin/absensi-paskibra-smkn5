@@ -15,10 +15,6 @@ export const pointRulesSchema = z
     "Poin terlambat tidak boleh melebihi poin hadir.",
   )
   .refine(
-    (r) => r.present === 10 && r.late === 7,
-    "Poin absensi ditetapkan: hadir 10 dan terlambat 7.",
-  )
-  .refine(
     (r) =>
       !!r.criteria?.length || (r.present > r.activity && r.present > r.skill),
     "Poin hadir harus lebih besar dari maksimum setiap komponen.",

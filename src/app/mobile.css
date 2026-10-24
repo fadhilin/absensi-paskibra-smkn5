@@ -269,9 +269,26 @@ main#main {
 .profile-photo-editor summary {
   color: var(--primary);
   font-size: 13px;
-  min-height: 44px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
   cursor: pointer;
-  padding-block: 12px;
+  padding-block: 8px;
+}
+.profile-photo-editor summary::-webkit-details-marker {
+  display: none;
+}
+.profile-photo-editor summary svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .profile-photo-editor p {
   font-size: 12px;
@@ -474,6 +491,23 @@ input.score-slider:disabled {
 .profile-section-title {
   font-size: 15px;
   margin: 12px 0;
+}
+.trainer-profile .member-identity {
+  padding-bottom: 8px;
+}
+.member-profile .member-identity {
+  padding-bottom: 8px;
+}
+.trainer-profile .profile-photo-editor {
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+.member-profile .profile-photo-editor {
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+.trainer-profile .trainer-profile-editor {
+  padding-block: 8px;
 }
 .trainer-app[data-page="Profil pelatih"] .heading-actions {
   display: none;
@@ -1128,23 +1162,28 @@ input.score-slider:disabled {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  max-width: 420px;
+  max-width: 520px;
 }
-.attendance-point-fixed > div {
+.attendance-point-fixed .field {
   display: grid;
-  gap: 5px;
+  gap: 8px;
   min-width: 0;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
 }
-.attendance-point-fixed span {
+.attendance-point-fixed .field > span {
   color: var(--muted);
   font-size: 12px;
 }
-.attendance-point-fixed strong {
+.attendance-point-fixed input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
   font-size: 16px;
+}
+.settings-history-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
 }
 .assessment-report-panel .table-wrap select {
   min-width: 100px;
@@ -1320,6 +1359,9 @@ input.score-slider:disabled {
 }
 .profile-links svg {
   color: var(--primary);
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
 }
 .profile-links button span:last-child {
   margin-left: auto;
@@ -1409,7 +1451,7 @@ input.score-slider:disabled {
     top: 0;
     z-index: 80;
   }
-  .success-toast {
+  .app-toast {
     right: 16px;
     bottom: calc(92px + env(safe-area-inset-bottom));
     width: calc(100vw - 32px);
