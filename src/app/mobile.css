@@ -1762,6 +1762,9 @@ input.score-slider:disabled {
   button {
     transition: none;
   }
+  .refresh-spinner.is-spinning {
+    animation: none;
+  }
 }
 @media print {
   @page {

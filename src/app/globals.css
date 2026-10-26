@@ -69,6 +69,28 @@ button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
+.attendance-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.refresh-spinner {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+.refresh-spinner.is-spinning {
+  animation: attendance-spin 0.7s linear infinite;
+}
+@keyframes attendance-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 input,
 select,
 textarea {

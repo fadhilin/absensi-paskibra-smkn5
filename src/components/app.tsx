@@ -347,6 +347,7 @@ export default function App() {
       schoolDate(new Date(), "Asia/Jakarta").slice(0, 7),
     );
   const [data, setData] = useState<DashboardData | null>(null);
+  const [attendanceRefreshing, setAttendanceRefreshing] = useState(false);
   const [readAnnouncementKeys, setReadAnnouncementKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
@@ -395,6 +396,14 @@ export default function App() {
       if (version === requestVersion.current) setLoading(false);
     }
   }, [month]);
+  async function refreshAttendance() {
+    setAttendanceRefreshing(true);
+    try {
+      await refresh();
+    } finally {
+      setAttendanceRefreshing(false);
+    }
+  }
   useEffect(() => {
     refresh();
   }, [refresh]);
@@ -1254,9 +1263,6 @@ export default function App() {
                     Daftar anggota{" "}
                     <span className="count">{s.members.length}</span>
                   </h2>
-                  <p>
-                    Riwayat anggota tetap tersimpan saat akun dinonaktifkan.
-                  </p>
                 </div>
                 <div className="actions">
                   <button
@@ -1490,8 +1496,17 @@ export default function App() {
                         catatan
                       </p>
                     </div>
-                    <button className="secondary" onClick={() => refresh()}>
-                      Muat ulang absensi
+                    <button
+                      className="secondary attendance-refresh"
+                      onClick={refreshAttendance}
+                      disabled={attendanceRefreshing}
+                      aria-live="polite"
+                    >
+                      <span
+                        className={`refresh-spinner${attendanceRefreshing ? " is-spinning" : ""}`}
+                        aria-hidden="true"
+                      />
+                      {attendanceRefreshing ? "Memuat absensi…" : "Muat ulang absensi"}
                     </button>
                     <button
                       className="secondary"

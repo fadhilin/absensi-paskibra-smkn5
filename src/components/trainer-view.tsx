@@ -153,7 +153,7 @@ export function TrainerProfile({
           }}
         >
           <label className="field">
-            <span>Nama pelatih</span>
+            <span>Nama</span>
             <input
               value={name}
               onChange={(event) => {
@@ -167,7 +167,7 @@ export function TrainerProfile({
             />
           </label>
           <label className="field">
-            <span>Email untuk anggota</span>
+            <span>Email</span>
             <input
               type="email"
               value={email}
